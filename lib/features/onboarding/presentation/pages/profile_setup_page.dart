@@ -174,7 +174,8 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                   Expanded(
                     flex: 2,
                     child: DropdownButtonFormField<String>(
-                      initialValue: _gender,
+                      // ignore: deprecated_member_use
+                      value: _gender,
                       decoration: InputDecoration(
                         labelText: 'Gender',
                         prefixIcon: const Icon(Icons.wc_rounded),
