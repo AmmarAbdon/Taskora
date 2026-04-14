@@ -1,4 +1,4 @@
-package com.example.todo_clean_bloc
+package com.example.taskora
 
 import io.flutter.embedding.android.FlutterActivity
 
