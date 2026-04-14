@@ -58,3 +58,32 @@ jobs:
           name: taskora-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           retention-days: 30
+
+  build_ios:
+    name: 🍎 Build iOS (No-Codesign)
+    runs-on: macos-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'any'
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Get Dependencies
+        run: flutter pub get
+
+      - name: 🍎 Build iOS
+        run: flutter build ios --release --no-codesign
+
+      - name: 📤 Upload iOS Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: taskora-ios-app
+          path: build/ios/iphoneos/Runner.app
+          retention-days: 7
+
