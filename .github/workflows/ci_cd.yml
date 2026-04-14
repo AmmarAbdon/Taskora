@@ -1,0 +1,112 @@
+name: TaskFlow CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # ─────────────────────────────────────────────
+  # JOB 1: Analyze & Test
+  # ─────────────────────────────────────────────
+  analyze_and_test:
+    name: 🔍 Analyze & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.x'
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Get Dependencies
+        run: flutter pub get
+
+      - name: 🔍 Analyze Code
+        run: flutter analyze --fatal-infos
+
+      - name: 🧪 Run Tests
+        run: flutter test --coverage
+
+  # ─────────────────────────────────────────────
+  # JOB 2: Build Android APK (Debug)
+  # ─────────────────────────────────────────────
+  build_android_debug:
+    name: 🤖 Build Android (Debug APK)
+    runs-on: ubuntu-latest
+    needs: analyze_and_test
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.x'
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Get Dependencies
+        run: flutter pub get
+
+      - name: 🔨 Build Debug APK
+        run: flutter build apk --debug
+
+      - name: 📤 Upload Debug APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: taskflow-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  # JOB 3: Build Android APK (Release) — only on main
+  # ─────────────────────────────────────────────
+  build_android_release:
+    name: 🚀 Build Android (Release APK)
+    runs-on: ubuntu-latest
+    needs: analyze_and_test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.x'
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Get Dependencies
+        run: flutter pub get
+
+      - name: 🚀 Build Release APK
+        run: flutter build apk --release --obfuscate --split-debug-info=build/debug-info
+
+      - name: 📤 Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: taskflow-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30
