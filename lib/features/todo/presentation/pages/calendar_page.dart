@@ -21,10 +21,13 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Calendar", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Calendar",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
       body: Column(
         children: [
@@ -34,7 +37,7 @@ class _CalendarPageState extends State<CalendarPage> {
               if (state is TodoLoaded) {
                 todos = state.todos;
               }
-              
+
               return Container(
                 margin: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -62,14 +65,18 @@ class _CalendarPageState extends State<CalendarPage> {
                     }
                   },
                   eventLoader: (day) {
-                    return todos.where((t) => isSameDay(t.dateTime, day)).toList();
+                    return todos
+                        .where((t) => isSameDay(t.dateTime, day))
+                        .toList();
                   },
                   calendarStyle: CalendarStyle(
                     todayDecoration: BoxDecoration(
                       color: theme.colorScheme.primaryContainer,
                       shape: BoxShape.circle,
                     ),
-                    todayTextStyle: TextStyle(color: theme.colorScheme.onPrimaryContainer),
+                    todayTextStyle: TextStyle(
+                      color: theme.colorScheme.onPrimaryContainer,
+                    ),
                     selectedDecoration: BoxDecoration(
                       color: theme.colorScheme.primary,
                       shape: BoxShape.circle,
@@ -91,21 +98,36 @@ class _CalendarPageState extends State<CalendarPage> {
             child: BlocBuilder<TodoBloc, TodoState>(
               builder: (context, state) {
                 if (state is TodoLoaded) {
-                  final dayTodos = state.todos.where((t) => isSameDay(t.dateTime, _selectedDay ?? _focusedDay)).toList();
-                  
+                  final dayTodos = state.todos
+                      .where(
+                        (t) =>
+                            isSameDay(t.dateTime, _selectedDay ?? _focusedDay),
+                      )
+                      .toList();
+
                   if (dayTodos.isEmpty) {
                     return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.event_busy, size: 64, color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
+                          Icon(
+                            Icons.event_busy,
+                            size: 64,
+                            color: theme.colorScheme.onSurfaceVariant
+                                .withValues(alpha: 0.5),
+                          ),
                           const SizedBox(height: 16),
-                          Text("No tasks for this day", style: theme.textTheme.titleMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                          Text(
+                            "No tasks for this day",
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
                         ],
                       ),
                     );
                   }
-                  
+
                   return ListView.builder(
                     itemCount: dayTodos.length,
                     itemBuilder: (context, index) {
@@ -114,10 +136,14 @@ class _CalendarPageState extends State<CalendarPage> {
                         todo: todo,
                         onTap: () {},
                         onToggle: () {
-                           context.read<TodoBloc>().add(ToggleTodoStatusEvent(todo));
+                          context.read<TodoBloc>().add(
+                            ToggleTodoStatusEvent(todo),
+                          );
                         },
                         onDelete: () {
-                           context.read<TodoBloc>().add(DeleteTodoEvent(todo.id!, todo.notificationId));
+                          context.read<TodoBloc>().add(
+                            DeleteTodoEvent(todo.id!, todo.notificationId),
+                          );
                         },
                       );
                     },

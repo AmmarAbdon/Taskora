@@ -81,8 +81,16 @@ class _FocusModePageState extends State<FocusModePage> {
             // --- Mode Toggle ---
             SegmentedButton<bool>(
               segments: const [
-                ButtonSegment(value: true, icon: Icon(Icons.work), label: Text("Work")),
-                ButtonSegment(value: false, icon: Icon(Icons.coffee), label: Text("Break")),
+                ButtonSegment(
+                  value: true,
+                  icon: Icon(Icons.work),
+                  label: Text("Work"),
+                ),
+                ButtonSegment(
+                  value: false,
+                  icon: Icon(Icons.coffee),
+                  label: Text("Break"),
+                ),
               ],
               selected: {_isWorking},
               onSelectionChanged: (Set<bool> newSelection) {
@@ -95,13 +103,17 @@ class _FocusModePageState extends State<FocusModePage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
               decoration: BoxDecoration(
-                color: _isWorking ? const Color(0xFFEF4444).withValues(alpha: 0.1) : const Color(0xFF10B981).withValues(alpha: 0.1),
+                color: _isWorking
+                    ? const Color(0xFFEF4444).withValues(alpha: 0.1)
+                    : const Color(0xFF10B981).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Text(
                 _isWorking ? "Focus Session" : "Break Time",
                 style: TextStyle(
-                  color: _isWorking ? const Color(0xFFEF4444) : const Color(0xFF10B981),
+                  color: _isWorking
+                      ? const Color(0xFFEF4444)
+                      : const Color(0xFF10B981),
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
@@ -119,7 +131,9 @@ class _FocusModePageState extends State<FocusModePage> {
                     strokeWidth: 12,
                     backgroundColor: theme.colorScheme.surfaceContainerHighest,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      _isWorking ? const Color(0xFFEF4444) : const Color(0xFF10B981),
+                      _isWorking
+                          ? const Color(0xFFEF4444)
+                          : const Color(0xFF10B981),
                     ),
                     strokeCap: StrokeCap.round,
                   ),
@@ -158,7 +172,10 @@ class _FocusModePageState extends State<FocusModePage> {
                     foregroundColor: theme.colorScheme.onPrimary,
                     elevation: 4,
                   ),
-                  child: Icon(_isRunning ? Icons.pause : Icons.play_arrow, size: 40),
+                  child: Icon(
+                    _isRunning ? Icons.pause : Icons.play_arrow,
+                    size: 40,
+                  ),
                 ),
               ],
             ),

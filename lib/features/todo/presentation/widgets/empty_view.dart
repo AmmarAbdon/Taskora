@@ -26,7 +26,9 @@ class EmptyView extends StatelessWidget {
           Text(
             "Add your first task and stay organized!",
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
             ),
           ),
         ],

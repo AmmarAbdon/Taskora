@@ -31,10 +31,10 @@ class NotificationService {
 
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+        );
 
     await _notificationsPlugin.initialize(
       settings: const InitializationSettings(
@@ -57,7 +57,8 @@ class NotificationService {
 
     final androidPlugin = _notificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     if (androidPlugin != null) {
       await androidPlugin.createNotificationChannel(channel);
@@ -102,7 +103,7 @@ class NotificationService {
 
     await _notificationsPlugin.zonedSchedule(
       id: todo.notificationId,
-      title: 'TaskFlow: ${todo.title}',
+      title: 'Taskora: ${todo.title}',
       body: todo.description.isNotEmpty
           ? todo.description
           : 'Time to complete your task!',

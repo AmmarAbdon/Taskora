@@ -55,15 +55,15 @@ class TodoEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        title,
-        description,
-        dateTime,
-        isCompleted,
-        isPinned,
-        priority,
-        category,
-        notificationId,
-        enableReminder,
-      ];
+    id,
+    title,
+    description,
+    dateTime,
+    isCompleted,
+    isPinned,
+    priority,
+    category,
+    notificationId,
+    enableReminder,
+  ];
 }

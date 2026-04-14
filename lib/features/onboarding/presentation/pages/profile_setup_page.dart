@@ -28,9 +28,9 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to pick image')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Failed to pick image')));
       }
     }
   }
@@ -49,9 +49,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-            builder: (_) => const MainPage(),
-          ),
+          MaterialPageRoute(builder: (_) => const MainPage()),
           (route) => false,
         );
       }
@@ -63,10 +61,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Setup Profile'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Setup Profile'), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(32.0),
         child: Form(
@@ -105,7 +100,11 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                             : null,
                       ),
                       child: _imagePath == null
-                          ? Icon(Icons.person_rounded, size: 80, color: theme.colorScheme.outline)
+                          ? Icon(
+                              Icons.person_rounded,
+                              size: 80,
+                              color: theme.colorScheme.outline,
+                            )
                           : null,
                     ),
                     Positioned(
@@ -120,7 +119,11 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                             shape: BoxShape.circle,
                             border: Border.all(color: Colors.white, width: 3),
                           ),
-                          child: const Icon(Icons.camera_alt_rounded, size: 20, color: Colors.white),
+                          child: const Icon(
+                            Icons.camera_alt_rounded,
+                            size: 20,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -135,9 +138,12 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                 decoration: InputDecoration(
                   labelText: 'Full Name',
                   prefixIcon: const Icon(Icons.badge_outlined),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
-                validator: (v) => v == null || v.isEmpty ? 'Please enter your name' : null,
+                validator: (v) =>
+                    v == null || v.isEmpty ? 'Please enter your name' : null,
               ),
               const SizedBox(height: 20),
 
@@ -152,7 +158,9 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                       decoration: InputDecoration(
                         labelText: 'Age',
                         prefixIcon: const Icon(Icons.calendar_month_outlined),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                       validator: (v) {
                         if (v == null || v.isEmpty) return 'Age?';
@@ -170,10 +178,14 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                       decoration: InputDecoration(
                         labelText: 'Gender',
                         prefixIcon: const Icon(Icons.wc_rounded),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                       items: ['Male', 'Female', 'Other']
-                          .map((g) => DropdownMenuItem(value: g, child: Text(g)))
+                          .map(
+                            (g) => DropdownMenuItem(value: g, child: Text(g)),
+                          )
                           .toList(),
                       onChanged: (v) => setState(() => _gender = v!),
                     ),
@@ -182,14 +194,16 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
               ),
 
               const SizedBox(height: 60),
-              
+
               FilledButton.icon(
                 onPressed: _completeSetup,
                 icon: const Icon(Icons.check_circle_outline),
                 label: const Text('Complete Setup'),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 20),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
               ),
             ],

@@ -35,7 +35,10 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<FilterTodosEvent>(_onFilterTodos);
   }
 
-  Future<void> _onLoadTodos(LoadTodosEvent event, Emitter<TodoState> emit) async {
+  Future<void> _onLoadTodos(
+    LoadTodosEvent event,
+    Emitter<TodoState> emit,
+  ) async {
     emit(TodoLoading());
     try {
       _allTodos = await getTodos(NoParams());
@@ -50,7 +53,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   Future<void> _onAddTodo(AddTodoEvent event, Emitter<TodoState> emit) async {
     try {
       await addTodo(event.todo);
-      
+
       // Only schedule if user enabled reminder AND time is in the future
       if (event.todo.enableReminder &&
           event.todo.dateTime.isAfter(DateTime.now())) {
@@ -58,10 +61,12 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
           await notificationService.scheduleNotification(event.todo);
         } catch (e) {
           // Task was saved successfully; notification failed — surface a warning
-          emit(TodoError("Task saved, but notification failed: ${e.toString()}"));
+          emit(
+            TodoError("Task saved, but notification failed: ${e.toString()}"),
+          );
         }
       }
-      
+
       add(LoadTodosEvent());
     } on CacheException catch (e) {
       emit(TodoError(e.message));
@@ -70,21 +75,26 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     }
   }
 
-  Future<void> _onUpdateTodo(UpdateTodoEvent event, Emitter<TodoState> emit) async {
+  Future<void> _onUpdateTodo(
+    UpdateTodoEvent event,
+    Emitter<TodoState> emit,
+  ) async {
     try {
       await updateTodo(event.todo);
       await notificationService.cancelNotification(event.todo.notificationId);
-      
+
       if (event.todo.enableReminder &&
           !event.todo.isCompleted &&
           event.todo.dateTime.isAfter(DateTime.now())) {
         try {
           await notificationService.scheduleNotification(event.todo);
         } catch (e) {
-          emit(TodoError("Task updated, but notification failed: ${e.toString()}"));
+          emit(
+            TodoError("Task updated, but notification failed: ${e.toString()}"),
+          );
         }
       }
-      
+
       add(LoadTodosEvent());
     } on CacheException catch (e) {
       emit(TodoError(e.message));
@@ -93,7 +103,10 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     }
   }
 
-  Future<void> _onDeleteTodo(DeleteTodoEvent event, Emitter<TodoState> emit) async {
+  Future<void> _onDeleteTodo(
+    DeleteTodoEvent event,
+    Emitter<TodoState> emit,
+  ) async {
     try {
       await deleteTodo(event.id);
       await notificationService.cancelNotification(event.notificationId);
@@ -105,22 +118,31 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     }
   }
 
-  Future<void> _onToggleTodoStatus(ToggleTodoStatusEvent event, Emitter<TodoState> emit) async {
+  Future<void> _onToggleTodoStatus(
+    ToggleTodoStatusEvent event,
+    Emitter<TodoState> emit,
+  ) async {
     try {
-      final updatedTodo = event.todo.copyWith(isCompleted: !event.todo.isCompleted);
+      final updatedTodo = event.todo.copyWith(
+        isCompleted: !event.todo.isCompleted,
+      );
       await updateTodo(updatedTodo);
-      
+
       if (updatedTodo.isCompleted) {
-        await notificationService.cancelNotification(updatedTodo.notificationId);
+        await notificationService.cancelNotification(
+          updatedTodo.notificationId,
+        );
       } else if (updatedTodo.dateTime.isAfter(DateTime.now())) {
         await notificationService.scheduleNotification(updatedTodo);
       }
-      
+
       add(LoadTodosEvent());
     } on CacheException catch (e) {
       emit(TodoError(e.message));
     } catch (e) {
-      emit(TodoError("An unexpected error occurred while toggling task status"));
+      emit(
+        TodoError("An unexpected error occurred while toggling task status"),
+      );
     }
   }
 
@@ -140,7 +162,11 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     }
   }
 
-  void _applyFilterAndSearch(Emitter<TodoState> emit, String filter, String query) {
+  void _applyFilterAndSearch(
+    Emitter<TodoState> emit,
+    String filter,
+    String query,
+  ) {
     List<TodoEntity> filtered = _allTodos;
 
     if (filter == 'Completed') {
@@ -150,10 +176,13 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     }
 
     if (query.isNotEmpty) {
-      filtered = filtered.where((t) => 
-        t.title.toLowerCase().contains(query.toLowerCase()) || 
-        t.description.toLowerCase().contains(query.toLowerCase())
-      ).toList();
+      filtered = filtered
+          .where(
+            (t) =>
+                t.title.toLowerCase().contains(query.toLowerCase()) ||
+                t.description.toLowerCase().contains(query.toLowerCase()),
+          )
+          .toList();
     }
 
     emit((state as TodoLoaded).copyWith(todos: filtered));

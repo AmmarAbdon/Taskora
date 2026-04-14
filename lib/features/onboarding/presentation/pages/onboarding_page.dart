@@ -18,17 +18,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final List<OnboardingData> _pages = [
     OnboardingData(
       title: "Organize Your Life",
-      description: "Keep track of all your tasks and goals in one place. Simple, clean and effective.",
+      description:
+          "Keep track of all your tasks and goals in one place. Simple, clean and effective.",
       icon: Icons.auto_awesome_mosaic_rounded,
     ),
     OnboardingData(
       title: "Never Miss a Deadline",
-      description: "Set smart reminders and get notified exactly when you need to take action.",
+      description:
+          "Set smart reminders and get notified exactly when you need to take action.",
       icon: Icons.notifications_active_rounded,
     ),
     OnboardingData(
       title: "Analyze Your Progress",
-      description: "Visualize your productivity with beautiful charts and stay motivated every day.",
+      description:
+          "Visualize your productivity with beautiful charts and stay motivated every day.",
       icon: Icons.insights_rounded,
     ),
   ];
@@ -52,44 +55,61 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(40),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        data.icon,
-                        size: 100,
-                        color: theme.colorScheme.primary,
-                      ),
-                    )
-                    .animate(key: ValueKey('icon_$index'))
-                    .scale(begin: const Offset(0.6, 0.6), duration: 500.ms, curve: Curves.elasticOut)
-                    .fadeIn(duration: 300.ms),
+                          padding: const EdgeInsets.all(40),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primaryContainer
+                                .withValues(alpha: 0.3),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            data.icon,
+                            size: 100,
+                            color: theme.colorScheme.primary,
+                          ),
+                        )
+                        .animate(key: ValueKey('icon_$index'))
+                        .scale(
+                          begin: const Offset(0.6, 0.6),
+                          duration: 500.ms,
+                          curve: Curves.elasticOut,
+                        )
+                        .fadeIn(duration: 300.ms),
                     const SizedBox(height: 60),
                     Text(
-                      data.title,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                    .animate(key: ValueKey('title_$index'))
-                    .slideY(begin: 0.3, end: 0, duration: 400.ms, delay: 150.ms, curve: Curves.easeOut)
-                    .fadeIn(duration: 400.ms, delay: 150.ms),
+                          data.title,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                        .animate(key: ValueKey('title_$index'))
+                        .slideY(
+                          begin: 0.3,
+                          end: 0,
+                          duration: 400.ms,
+                          delay: 150.ms,
+                          curve: Curves.easeOut,
+                        )
+                        .fadeIn(duration: 400.ms, delay: 150.ms),
                     const SizedBox(height: 20),
                     Text(
-                      data.description,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-                    )
-                    .animate(key: ValueKey('desc_$index'))
-                    .slideY(begin: 0.3, end: 0, duration: 400.ms, delay: 280.ms, curve: Curves.easeOut)
-                    .fadeIn(duration: 400.ms, delay: 280.ms),
+                          data.description,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        )
+                        .animate(key: ValueKey('desc_$index'))
+                        .slideY(
+                          begin: 0.3,
+                          end: 0,
+                          duration: 400.ms,
+                          delay: 280.ms,
+                          curve: Curves.easeOut,
+                        )
+                        .fadeIn(duration: 400.ms, delay: 280.ms),
                   ],
                 ),
               );
@@ -111,7 +131,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       height: 8,
                       width: _currentPage == index ? 24 : 8,
                       decoration: BoxDecoration(
-                        color: _currentPage == index ? theme.colorScheme.primary : theme.colorScheme.outlineVariant,
+                        color: _currentPage == index
+                            ? theme.colorScheme.primary
+                            : theme.colorScheme.outlineVariant,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -129,12 +151,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       if (context.mounted) {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (_) => const ProfileSetupPage()),
+                          MaterialPageRoute(
+                            builder: (_) => const ProfileSetupPage(),
+                          ),
                         );
                       }
                     }
                   },
-                  label: Text(_currentPage == _pages.length - 1 ? "Get Started" : "Next"),
+                  label: Text(
+                    _currentPage == _pages.length - 1 ? "Get Started" : "Next",
+                  ),
                   icon: const Icon(Icons.arrow_forward_rounded),
                 ),
               ],
@@ -151,5 +177,9 @@ class OnboardingData {
   final String description;
   final IconData icon;
 
-  OnboardingData({required this.title, required this.description, required this.icon});
+  OnboardingData({
+    required this.title,
+    required this.description,
+    required this.icon,
+  });
 }

@@ -36,92 +36,129 @@ class _StatisticsPageState extends State<StatisticsPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 60, // Increased size
-                        backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                        backgroundImage: profile?.imagePath != null 
-                            ? FileImage(File(profile!.imagePath!)) 
-                            : null,
-                        child: profile?.imagePath == null 
-                            ? Icon(Icons.person, color: theme.colorScheme.primary, size: 60)
-                            : null,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 60, // Increased size
+                            backgroundColor:
+                                theme.colorScheme.surfaceContainerHighest,
+                            backgroundImage: profile?.imagePath != null
+                                ? FileImage(File(profile!.imagePath!))
+                                : null,
+                            child: profile?.imagePath == null
+                                ? Icon(
+                                    Icons.person,
+                                    color: theme.colorScheme.primary,
+                                    size: 60,
+                                  )
+                                : null,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            "Here's your progress,",
+                            style: TextStyle(
+                              color: theme.colorScheme.onSurfaceVariant,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            profile?.name.split(' ').first ?? 'User',
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ), // Made name slightly larger too
+                          ),
+                        ],
+                      )
+                      .animate()
+                      .fadeIn(duration: 400.ms)
+                      .slideY(
+                        begin: -0.1,
+                        end: 0,
+                        duration: 400.ms,
+                        curve: Curves.easeOut,
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        "Here's your progress,",
-                        style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 16),
-                      ),
-                      Text(
-                        profile?.name.split(' ').first ?? 'User',
-                        style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold), // Made name slightly larger too
-                      ),
-                    ],
-                  )
-                  .animate()
-                  .fadeIn(duration: 400.ms)
-                  .slideY(begin: -0.1, end: 0, duration: 400.ms, curve: Curves.easeOut),
                   const SizedBox(height: 32),
                   Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          theme.colorScheme.primary,
-                          theme.colorScheme.primary.withValues(alpha: 0.7),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              theme.colorScheme.primary,
+                              theme.colorScheme.primary.withValues(alpha: 0.7),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              "Productivity Score",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "${productivity.toStringAsFixed(1)}%",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 48,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                      .animate()
+                      .fadeIn(duration: 500.ms, delay: 100.ms)
+                      .slideY(
+                        begin: 0.2,
+                        end: 0,
+                        duration: 500.ms,
+                        delay: 100.ms,
+                        curve: Curves.easeOut,
                       ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Productivity Score",
-                          style: TextStyle(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w500),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          "${productivity.toStringAsFixed(1)}%",
-                          style: const TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  )
-                  .animate()
-                  .fadeIn(duration: 500.ms, delay: 100.ms)
-                  .slideY(begin: 0.2, end: 0, duration: 500.ms, delay: 100.ms, curve: Curves.easeOut),
                   const SizedBox(height: 32),
                   Row(
-                    children: [
-                      Expanded(
-                        child: _StatCard(
-                          title: "Completed",
-                          value: completed.toString(),
-                          icon: Icons.check_circle_outline,
-                          color: const Color(0xFF10B981),
-                        ),
+                        children: [
+                          Expanded(
+                            child: _StatCard(
+                              title: "Completed",
+                              value: completed.toString(),
+                              icon: Icons.check_circle_outline,
+                              color: const Color(0xFF10B981),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _StatCard(
+                              title: "Pending",
+                              value: pending.toString(),
+                              icon: Icons.pending_actions,
+                              color: const Color(0xFFF59E0B),
+                            ),
+                          ),
+                        ],
+                      )
+                      .animate()
+                      .fadeIn(duration: 500.ms, delay: 250.ms)
+                      .slideY(
+                        begin: 0.2,
+                        end: 0,
+                        duration: 500.ms,
+                        delay: 250.ms,
+                        curve: Curves.easeOut,
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: _StatCard(
-                          title: "Pending",
-                          value: pending.toString(),
-                          icon: Icons.pending_actions,
-                          color: const Color(0xFFF59E0B),
-                        ),
-                      ),
-                    ],
-                  )
-                  .animate()
-                  .fadeIn(duration: 500.ms, delay: 250.ms)
-                  .slideY(begin: 0.2, end: 0, duration: 500.ms, delay: 250.ms, curve: Curves.easeOut),
                   const SizedBox(height: 48),
                   Text(
                     "Overview",
-                    style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   if (total > 0)
@@ -137,21 +174,31 @@ class _StatisticsPageState extends State<StatisticsPage> {
                               value: completed.toDouble(),
                               title: '$completed',
                               radius: 50,
-                              titleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                              titleStyle: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                             PieChartSectionData(
                               color: const Color(0xFFF59E0B),
                               value: pending.toDouble(),
                               title: '$pending',
                               radius: 50,
-                              titleStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                              titleStyle: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ],
                         ),
                       ),
                     )
                   else
-                    const Center(child: Text("No tasks available to show statistics.")),
+                    const Center(
+                      child: Text("No tasks available to show statistics."),
+                    ),
                 ],
               ),
             );

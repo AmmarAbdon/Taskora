@@ -46,12 +46,17 @@ class TodoLocalDataSourceImpl implements TodoLocalDataSource {
   Future<List<TodoModel>> getTodos() async {
     try {
       final db = await database;
-      final List<Map<String, dynamic>> maps = await db.query('todos', orderBy: 'dateTime ASC');
+      final List<Map<String, dynamic>> maps = await db.query(
+        'todos',
+        orderBy: 'dateTime ASC',
+      );
       return List.generate(maps.length, (i) {
         return TodoModel.fromJson(maps[i]);
       });
     } catch (e) {
-      throw CacheException('Failed to load tasks from local storage: ${e.toString()}');
+      throw CacheException(
+        'Failed to load tasks from local storage: ${e.toString()}',
+      );
     }
   }
 
@@ -65,7 +70,9 @@ class TodoLocalDataSourceImpl implements TodoLocalDataSource {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     } catch (e) {
-      throw CacheException('Failed to add task to local storage: ${e.toString()}');
+      throw CacheException(
+        'Failed to add task to local storage: ${e.toString()}',
+      );
     }
   }
 
@@ -80,7 +87,9 @@ class TodoLocalDataSourceImpl implements TodoLocalDataSource {
         whereArgs: [todo.id],
       );
     } catch (e) {
-      throw CacheException('Failed to update task in local storage: ${e.toString()}');
+      throw CacheException(
+        'Failed to update task in local storage: ${e.toString()}',
+      );
     }
   }
 
@@ -88,13 +97,11 @@ class TodoLocalDataSourceImpl implements TodoLocalDataSource {
   Future<void> deleteTodo(int id) async {
     try {
       final db = await database;
-      await db.delete(
-        'todos',
-        where: 'id = ?',
-        whereArgs: [id],
-      );
+      await db.delete('todos', where: 'id = ?', whereArgs: [id]);
     } catch (e) {
-      throw CacheException('Failed to delete task from local storage: ${e.toString()}');
+      throw CacheException(
+        'Failed to delete task from local storage: ${e.toString()}',
+      );
     }
   }
 }

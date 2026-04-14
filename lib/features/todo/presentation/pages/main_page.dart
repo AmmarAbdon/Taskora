@@ -67,7 +67,9 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   onPressed: () {
-                    themeNotifier.value = isDark ? ThemeMode.light : ThemeMode.dark;
+                    themeNotifier.value = isDark
+                        ? ThemeMode.light
+                        : ThemeMode.dark;
                   },
                 );
               },
@@ -123,8 +125,8 @@ class _MainPageState extends State<MainPage> {
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected 
-              ? theme.colorScheme.primary.withValues(alpha: 0.1) 
+          color: isSelected
+              ? theme.colorScheme.primary.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
@@ -136,8 +138,8 @@ class _MainPageState extends State<MainPage> {
               duration: const Duration(milliseconds: 300),
               child: Icon(
                 icon,
-                color: isSelected 
-                    ? theme.colorScheme.primary 
+                color: isSelected
+                    ? theme.colorScheme.primary
                     : theme.colorScheme.onSurfaceVariant,
                 size: 26,
               ),

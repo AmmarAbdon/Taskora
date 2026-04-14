@@ -29,17 +29,20 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
     'Shopping',
     'Health',
     'Education',
-    'Other'
+    'Other',
   ];
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.todo?.title ?? '');
-    _descriptionController =
-        TextEditingController(text: widget.todo?.description ?? '');
+    _descriptionController = TextEditingController(
+      text: widget.todo?.description ?? '',
+    );
     _selectedDate = widget.todo?.dateTime ?? DateTime.now();
-    _selectedTime = TimeOfDay.fromDateTime(widget.todo?.dateTime ?? DateTime.now());
+    _selectedTime = TimeOfDay.fromDateTime(
+      widget.todo?.dateTime ?? DateTime.now(),
+    );
     _selectedPriority = widget.todo?.priority ?? TodoPriority.low;
     _selectedCategory = widget.todo?.category ?? 'Personal';
     _isPinned = widget.todo?.isPinned ?? false;
@@ -69,7 +72,8 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
         description: _descriptionController.text,
         dateTime: combinedDateTime,
         isCompleted: widget.todo?.isCompleted ?? false,
-        notificationId: widget.todo?.notificationId ?? Random().nextInt(1000000),
+        notificationId:
+            widget.todo?.notificationId ?? Random().nextInt(1000000),
         priority: _selectedPriority,
         category: _selectedCategory,
         isPinned: _isPinned,
@@ -110,7 +114,10 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
         actions: [
           TextButton(
             onPressed: _save,
-            child: const Text("SAVE", style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text(
+              "SAVE",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
           const SizedBox(width: 8),
         ],
@@ -129,10 +136,11 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
                 border: InputBorder.none,
                 hintStyle: TextStyle(color: theme.colorScheme.outlineVariant),
               ),
-              validator: (v) => v == null || v.isEmpty ? "Title is required" : null,
+              validator: (v) =>
+                  v == null || v.isEmpty ? "Title is required" : null,
             ),
             const SizedBox(height: 12),
-            
+
             // --- Description Field ---
             TextFormField(
               controller: _descriptionController,
@@ -145,7 +153,9 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                fillColor: theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.5,
+                ),
               ),
             ),
             const SizedBox(height: 32),
@@ -189,7 +199,12 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
             const SizedBox(height: 32),
 
             // --- Category Selector ---
-            Text("Category", style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "Category",
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 12),
             SizedBox(
               height: 45,
@@ -203,10 +218,18 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
                   return ChoiceChip(
                     label: Text(cat),
                     selected: isSelected,
-                    onSelected: (val) => setState(() => _selectedCategory = cat),
-                    avatar: Icon(_getCategoryIcon(cat), size: 16, 
-                      color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.primary),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    onSelected: (val) =>
+                        setState(() => _selectedCategory = cat),
+                    avatar: Icon(
+                      _getCategoryIcon(cat),
+                      size: 16,
+                      color: isSelected
+                          ? theme.colorScheme.onPrimary
+                          : theme.colorScheme.primary,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   );
                 },
               ),
@@ -214,16 +237,27 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
             const SizedBox(height: 32),
 
             // --- Priority Level ---
-            Text("Priority", style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            Text(
+              "Priority",
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 12),
             Row(
               children: TodoPriority.values.map((p) {
                 final isSelected = _selectedPriority == p;
                 Color pColor;
-                switch(p) {
-                  case TodoPriority.high: pColor = Colors.red; break;
-                  case TodoPriority.medium: pColor = Colors.orange; break;
-                  case TodoPriority.low: pColor = Colors.green; break;
+                switch (p) {
+                  case TodoPriority.high:
+                    pColor = Colors.red;
+                    break;
+                  case TodoPriority.medium:
+                    pColor = Colors.orange;
+                    break;
+                  case TodoPriority.low:
+                    pColor = Colors.green;
+                    break;
                 }
                 return Expanded(
                   child: Padding(
@@ -233,9 +267,14 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
-                          color: isSelected ? pColor : pColor.withValues(alpha: 0.1),
+                          color: isSelected
+                              ? pColor
+                              : pColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: pColor, width: isSelected ? 2 : 1),
+                          border: Border.all(
+                            color: pColor,
+                            width: isSelected ? 2 : 1,
+                          ),
                         ),
                         child: Center(
                           child: Text(
@@ -297,7 +336,12 @@ class _PickerTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: 8),
         InkWell(
           onTap: onTap,
@@ -305,15 +349,22 @@ class _PickerTile extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+              color: theme.colorScheme.surfaceContainerHighest.withValues(
+                alpha: 0.3,
+              ),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
+              border: Border.all(
+                color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5),
+              ),
             ),
             child: Row(
               children: [
                 Icon(icon, size: 18, color: theme.colorScheme.primary),
                 const SizedBox(width: 12),
-                Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(
+                  value,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
               ],
             ),
           ),
@@ -362,7 +413,10 @@ class _ToggleTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  label,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 Text(hint, style: theme.textTheme.bodySmall),
               ],
             ),

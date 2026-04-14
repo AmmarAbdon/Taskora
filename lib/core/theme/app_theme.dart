@@ -63,10 +63,9 @@ class AppTheme {
     );
 
     return base.copyWith(
-      textTheme: GoogleFonts.poppinsTextTheme(base.textTheme).apply(
-        bodyColor: Colors.white,
-        displayColor: Colors.white,
-      ),
+      textTheme: GoogleFonts.poppinsTextTheme(
+        base.textTheme,
+      ).apply(bodyColor: Colors.white, displayColor: Colors.white),
       appBarTheme: const AppBarTheme(
         centerTitle: true,
         elevation: 0,

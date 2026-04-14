@@ -15,11 +15,7 @@ class TodoLoaded extends TodoState {
   final String filter;
   final String searchQuery;
 
-  TodoLoaded({
-    required this.todos,
-    this.filter = 'All',
-    this.searchQuery = '',
-  });
+  TodoLoaded({required this.todos, this.filter = 'All', this.searchQuery = ''});
 
   @override
   List<Object?> get props => [todos, filter, searchQuery];

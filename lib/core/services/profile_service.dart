@@ -15,18 +15,18 @@ class UserProfile {
   });
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'age': age,
-        'gender': gender,
-        'imagePath': imagePath,
-      };
+    'name': name,
+    'age': age,
+    'gender': gender,
+    'imagePath': imagePath,
+  };
 
   factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
-        name: json['name'],
-        age: json['age'],
-        gender: json['gender'],
-        imagePath: json['imagePath'],
-      );
+    name: json['name'],
+    age: json['age'],
+    gender: json['gender'],
+    imagePath: json['imagePath'],
+  );
 }
 
 class ProfileService {

@@ -19,13 +19,15 @@ Future<void> init() async {
   sl.registerLazySingleton(() => sharedPreferences);
 
   // BLoC
-  sl.registerFactory(() => TodoBloc(
-    getTodos: sl(),
-    addTodo: sl(),
-    updateTodo: sl(),
-    deleteTodo: sl(),
-    notificationService: sl(),
-  ));
+  sl.registerFactory(
+    () => TodoBloc(
+      getTodos: sl(),
+      addTodo: sl(),
+      updateTodo: sl(),
+      deleteTodo: sl(),
+      notificationService: sl(),
+    ),
+  );
 
   // Use cases
   sl.registerLazySingleton(() => GetTodos(sl()));
@@ -47,6 +49,6 @@ Future<void> init() async {
   final notificationService = NotificationService();
   await notificationService.init();
   sl.registerLazySingleton(() => notificationService);
-  
+
   sl.registerLazySingleton(() => ProfileService(sl()));
 }
