@@ -47,7 +47,8 @@ Future<void> init() async {
 
   // Core Services
   final notificationService = NotificationService();
-  await notificationService.init();
+  // Initialize in background to speed up app startup
+  notificationService.init(); 
   sl.registerLazySingleton(() => notificationService);
 
   sl.registerLazySingleton(() => ProfileService(sl()));

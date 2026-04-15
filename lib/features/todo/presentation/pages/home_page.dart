@@ -24,7 +24,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    context.read<TodoBloc>().add(LoadTodosEvent());
   }
 
   @override
@@ -47,25 +46,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: BlocListener<TodoBloc, TodoState>(
-        listener: (context, state) {
-          if (state is TodoError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: theme.colorScheme.error,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            );
-          }
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
             // --- Greeting (Fixed) ---
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
@@ -197,29 +180,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 100),
-        child: FloatingActionButton.large(
-          onPressed: () async {
-            final todo = await Navigator.push<TodoEntity>(
-              context,
-              MaterialPageRoute(builder: (_) => const AddEditTodoPage()),
-            );
-            if (todo != null && context.mounted) {
-              context.read<TodoBloc>().add(AddTodoEvent(todo));
-            }
-          },
-          backgroundColor: theme.colorScheme.primary,
-          foregroundColor: theme.colorScheme.onPrimary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: const Icon(Icons.add_rounded, size: 32),
-        ),
-      ),
-    );
+        ],
+      );
   }
 }

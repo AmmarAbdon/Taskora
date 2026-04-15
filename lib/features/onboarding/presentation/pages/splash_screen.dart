@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/services/profile_service.dart';
+import '../../../todo/presentation/bloc/todo_bloc.dart';
+import '../../../todo/presentation/bloc/todo_event.dart';
 import 'onboarding_page.dart';
 import 'profile_setup_page.dart';
 import '../../../todo/presentation/pages/main_page.dart';
@@ -21,7 +24,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToNext() async {
-    await Future.delayed(const Duration(milliseconds: 3000));
+    // Start loading data immediately so it's ready when the splash ends
+    if (mounted) {
+      context.read<TodoBloc>().add(LoadTodosEvent());
+    }
+
+    // Reduced delay from 3000ms to 1200ms for a snappier start
+    await Future.delayed(const Duration(milliseconds: 1200));
     if (!mounted) return;
 
     final profileService = sl<ProfileService>();

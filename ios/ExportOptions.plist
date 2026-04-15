@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Distribution method: app-store | ad-hoc | enterprise | development -->
+    <key>method</key>
+    <string>app-store</string>
+
+    <!-- Your Apple Team ID (visible in Apple Developer Portal) -->
+    <key>teamID</key>
+    <string>YOUR_TEAM_ID</string>
+
+    <!-- Bundle ID → Provisioning Profile name mapping -->
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>com.taskora.app</key>
+        <string>Taskora App Store Distribution</string>
+    </dict>
+
+    <!-- Signing identity (Distribution certificate common name) -->
+    <key>signingCertificate</key>
+    <string>Apple Distribution</string>
+
+    <!-- Signing style: manual | automatic -->
+    <key>signingStyle</key>
+    <string>manual</string>
+
+    <!-- Upload symbols to Apple crash reporting -->
+    <key>uploadSymbols</key>
+    <true/>
+
+    <!-- Bitcode (disabled - Flutter does not support bitcode) -->
+    <key>compileBitcode</key>
+    <false/>
+
+    <!-- Strip Swift symbols to reduce IPA size -->
+    <key>stripSwiftSymbols</key>
+    <true/>
+
+    <!-- Thinning: none | <thin-for-all-variants> | specific device -->
+    <key>thinning</key>
+    <string>&lt;none&gt;</string>
+</dict>
+</plist>

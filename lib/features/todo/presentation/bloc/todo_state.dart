@@ -40,3 +40,11 @@ class TodoError extends TodoState {
   @override
   List<Object?> get props => [message];
 }
+
+class TodoActionSuccess extends TodoState {
+  final String message;
+  TodoActionSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

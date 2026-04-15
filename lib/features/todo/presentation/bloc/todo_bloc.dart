@@ -67,6 +67,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         }
       }
 
+      emit(TodoActionSuccess("Task added successfully! 🎉"));
       add(LoadTodosEvent());
     } on CacheException catch (e) {
       emit(TodoError(e.message));
@@ -95,6 +96,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         }
       }
 
+      emit(TodoActionSuccess("Task updated successfully! ✨"));
       add(LoadTodosEvent());
     } on CacheException catch (e) {
       emit(TodoError(e.message));
@@ -110,6 +112,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     try {
       await deleteTodo(event.id);
       await notificationService.cancelNotification(event.notificationId);
+      emit(TodoActionSuccess("Task deleted successfully! 🗑️"));
       add(LoadTodosEvent());
     } on CacheException catch (e) {
       emit(TodoError(e.message));
