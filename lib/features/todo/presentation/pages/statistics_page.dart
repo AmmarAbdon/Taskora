@@ -130,7 +130,7 @@ class StatisticsPage extends StatelessWidget {
                     border: Border.all(color: Colors.white, width: 3),
                     boxShadow: [
                       BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withValues(alpha: 0.2),
                           blurRadius: 10,
                           offset: const Offset(0, 4)),
                     ],
@@ -160,7 +160,7 @@ class StatisticsPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(40),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.02),
+              color: Colors.black.withValues(alpha: 0.02),
               blurRadius: 40,
               offset: const Offset(0, 20)),
         ],
@@ -175,7 +175,7 @@ class StatisticsPage extends StatelessWidget {
             child: CircularProgressIndicator(
               value: 1.0,
               strokeWidth: 24,
-              color: theme.colorScheme.primary.withOpacity(0.05),
+              color: theme.colorScheme.primary.withValues(alpha: 0.05),
               strokeCap: StrokeCap.round,
             ),
           ),
@@ -215,7 +215,7 @@ class StatisticsPage extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withOpacity(0.1),
+                  color: theme.colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -254,9 +254,9 @@ class _StatTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.05),
+        color: color.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: color.withOpacity(0.1)),
+        border: Border.all(color: color.withValues(alpha: 0.1)),
       ),
       child: Column(
         children: [
