@@ -12,6 +12,7 @@ import 'package:taskora/features/todo/domain/usecases/update_todo.dart';
 import 'package:taskora/features/todo/presentation/bloc/todo_bloc.dart';
 import 'package:taskora/features/todo/presentation/bloc/todo_event.dart';
 import 'package:taskora/features/todo/presentation/bloc/todo_state.dart';
+import 'package:taskora/core/error/exceptions.dart';
 
 class MockGetTodos extends Mock implements GetTodos {}
 class MockAddTodo extends Mock implements AddTodo {}
@@ -113,6 +114,44 @@ void main() {
       verify: (bloc) {
         verify(() => mockAddTodo(tTodo)).called(1);
       },
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoLoading, TodoError] with fallback message when LoadTodosEvent fails with generic exception',
+      build: () {
+        when(() => mockGetTodos(any())).thenThrow(Exception('Database Error'));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(LoadTodosEvent()),
+      expect: () => [
+        TodoLoading(),
+        TodoError('An unexpected error occurred while loading tasks'),
+      ],
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoLoading, TodoError] with specific message when LoadTodosEvent fails with CacheException',
+      build: () {
+        when(() => mockGetTodos(any())).thenThrow(CacheException('Cache Failure'));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(LoadTodosEvent()),
+      expect: () => [
+        TodoLoading(),
+        TodoError('Cache Failure'),
+      ],
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoError] with fallback message when AddTodoEvent fails',
+      build: () {
+        when(() => mockAddTodo(any())).thenThrow(Exception('Save Error'));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(AddTodoEvent(tTodo)),
+      expect: () => [
+        TodoError('An unexpected error occurred while adding the task'),
+      ],
     );
   });
 }
