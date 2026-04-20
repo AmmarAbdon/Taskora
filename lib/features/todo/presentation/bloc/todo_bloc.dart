@@ -5,6 +5,7 @@ import '../../domain/usecases/add_todo.dart';
 import '../../domain/usecases/delete_todo.dart';
 import '../../domain/usecases/get_todos.dart';
 import '../../domain/usecases/update_todo.dart';
+import '../../domain/usecases/get_focus_sessions_count.dart';
 import '../../domain/entities/todo_entity.dart';
 import 'todo_event.dart';
 import 'todo_state.dart';
@@ -15,6 +16,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final AddTodo addTodo;
   final UpdateTodo updateTodo;
   final DeleteTodo deleteTodo;
+  final GetFocusSessionsCount getFocusSessionsCount;
   final NotificationService notificationService;
 
   List<TodoEntity> _allTodos = [];
@@ -24,6 +26,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     required this.addTodo,
     required this.updateTodo,
     required this.deleteTodo,
+    required this.getFocusSessionsCount,
     required this.notificationService,
   }) : super(TodoInitial()) {
     on<LoadTodosEvent>(_onLoadTodos);
@@ -35,14 +38,12 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<FilterTodosEvent>(_onFilterTodos);
   }
 
-  Future<void> _onLoadTodos(
-    LoadTodosEvent event,
-    Emitter<TodoState> emit,
-  ) async {
+  Future<void> _onLoadTodos(LoadTodosEvent event, Emitter<TodoState> emit) async {
     emit(TodoLoading());
     try {
       _allTodos = await getTodos(NoParams());
-      emit(TodoLoaded(todos: _allTodos));
+      final focusCount = await getFocusSessionsCount(DateTime.now());
+      emit(TodoLoaded(todos: _allTodos, focusSessionsToday: focusCount));
     } on CacheException catch (e) {
       emit(TodoError(e.message));
     } catch (e) {
@@ -53,20 +54,13 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   Future<void> _onAddTodo(AddTodoEvent event, Emitter<TodoState> emit) async {
     try {
       await addTodo(event.todo);
-
-      // Only schedule if user enabled reminder AND time is in the future
-      if (event.todo.enableReminder &&
-          event.todo.dateTime.isAfter(DateTime.now())) {
+      if (event.todo.enableReminder && event.todo.dateTime.isAfter(DateTime.now())) {
         try {
           await notificationService.scheduleNotification(event.todo);
         } catch (e) {
-          // Task was saved successfully; notification failed — surface a warning
-          emit(
-            TodoError("Task saved, but notification failed: ${e.toString()}"),
-          );
+          emit(TodoError("Task saved, but notification failed: ${e.toString()}"));
         }
       }
-
       emit(TodoActionSuccess("Task added successfully! 🎉"));
       add(LoadTodosEvent());
     } on CacheException catch (e) {
@@ -76,26 +70,17 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     }
   }
 
-  Future<void> _onUpdateTodo(
-    UpdateTodoEvent event,
-    Emitter<TodoState> emit,
-  ) async {
+  Future<void> _onUpdateTodo(UpdateTodoEvent event, Emitter<TodoState> emit) async {
     try {
       await updateTodo(event.todo);
       await notificationService.cancelNotification(event.todo.notificationId);
-
-      if (event.todo.enableReminder &&
-          !event.todo.isCompleted &&
-          event.todo.dateTime.isAfter(DateTime.now())) {
+      if (event.todo.enableReminder && !event.todo.isCompleted && event.todo.dateTime.isAfter(DateTime.now())) {
         try {
           await notificationService.scheduleNotification(event.todo);
         } catch (e) {
-          emit(
-            TodoError("Task updated, but notification failed: ${e.toString()}"),
-          );
+          emit(TodoError("Task updated, but notification failed: ${e.toString()}"));
         }
       }
-
       emit(TodoActionSuccess("Task updated successfully! ✨"));
       add(LoadTodosEvent());
     } on CacheException catch (e) {
@@ -105,10 +90,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     }
   }
 
-  Future<void> _onDeleteTodo(
-    DeleteTodoEvent event,
-    Emitter<TodoState> emit,
-  ) async {
+  Future<void> _onDeleteTodo(DeleteTodoEvent event, Emitter<TodoState> emit) async {
     try {
       await deleteTodo(event.id);
       await notificationService.cancelNotification(event.notificationId);
@@ -121,31 +103,20 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     }
   }
 
-  Future<void> _onToggleTodoStatus(
-    ToggleTodoStatusEvent event,
-    Emitter<TodoState> emit,
-  ) async {
+  Future<void> _onToggleTodoStatus(ToggleTodoStatusEvent event, Emitter<TodoState> emit) async {
     try {
-      final updatedTodo = event.todo.copyWith(
-        isCompleted: !event.todo.isCompleted,
-      );
+      final updatedTodo = event.todo.copyWith(isCompleted: !event.todo.isCompleted);
       await updateTodo(updatedTodo);
-
       if (updatedTodo.isCompleted) {
-        await notificationService.cancelNotification(
-          updatedTodo.notificationId,
-        );
+        await notificationService.cancelNotification(updatedTodo.notificationId);
       } else if (updatedTodo.dateTime.isAfter(DateTime.now())) {
         await notificationService.scheduleNotification(updatedTodo);
       }
-
       add(LoadTodosEvent());
     } on CacheException catch (e) {
       emit(TodoError(e.message));
     } catch (e) {
-      emit(
-        TodoError("An unexpected error occurred while toggling task status"),
-      );
+      emit(TodoError("An unexpected error occurred while toggling task status"));
     }
   }
 
@@ -153,7 +124,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     if (state is TodoLoaded) {
       final currentState = state as TodoLoaded;
       emit(currentState.copyWith(searchQuery: event.query));
-      _applyFilterAndSearch(emit, currentState.filter, event.query);
+      _applyFilterAndSearch(emit, currentState.filter, event.query, currentState.focusSessionsToday);
     }
   }
 
@@ -161,33 +132,21 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     if (state is TodoLoaded) {
       final currentState = state as TodoLoaded;
       emit(currentState.copyWith(filter: event.filter));
-      _applyFilterAndSearch(emit, event.filter, currentState.searchQuery);
+      _applyFilterAndSearch(emit, event.filter, currentState.searchQuery, currentState.focusSessionsToday);
     }
   }
 
-  void _applyFilterAndSearch(
-    Emitter<TodoState> emit,
-    String filter,
-    String query,
-  ) {
+  void _applyFilterAndSearch(Emitter<TodoState> emit, String filter, String query, int focusSessionsToday) {
     List<TodoEntity> filtered = _allTodos;
-
     if (filter == 'Completed') {
       filtered = filtered.where((t) => t.isCompleted).toList();
     } else if (filter == 'Pending') {
       filtered = filtered.where((t) => !t.isCompleted).toList();
     }
-
     if (query.isNotEmpty) {
-      filtered = filtered
-          .where(
-            (t) =>
-                t.title.toLowerCase().contains(query.toLowerCase()) ||
-                t.description.toLowerCase().contains(query.toLowerCase()),
-          )
-          .toList();
+      final lowerQuery = query.toLowerCase();
+      filtered = filtered.where((t) => t.title.toLowerCase().contains(lowerQuery) || t.description.toLowerCase().contains(lowerQuery)).toList();
     }
-
-    emit((state as TodoLoaded).copyWith(todos: filtered));
+    emit((state as TodoLoaded).copyWith(todos: filtered, focusSessionsToday: focusSessionsToday));
   }
 }

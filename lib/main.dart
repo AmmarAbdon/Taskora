@@ -4,6 +4,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/services/service_locator.dart' as di;
 import 'features/todo/presentation/bloc/todo_bloc.dart';
+import 'features/profile/presentation/bloc/profile_bloc.dart';
+import 'features/profile/presentation/bloc/profile_event.dart';
+import 'features/todo/presentation/bloc/calendar_bloc/calendar_bloc.dart';
+import 'features/todo/presentation/bloc/navigation_bloc/navigation_bloc.dart';
+import 'features/todo/presentation/bloc/focus_bloc/focus_bloc.dart';
+import 'features/todo/presentation/bloc/focus_bloc/focus_event.dart';
 import 'features/onboarding/presentation/pages/splash_screen.dart';
 
 late ValueNotifier<ThemeMode> themeNotifier;
@@ -28,8 +34,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => di.sl<TodoBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => di.sl<TodoBloc>()),
+        BlocProvider(create: (_) => di.sl<ProfileBloc>()..add(LoadProfileEvent())),
+        BlocProvider(create: (_) => di.sl<CalendarBloc>()),
+        BlocProvider(create: (_) => di.sl<NavigationBloc>()),
+        BlocProvider(create: (_) => di.sl<FocusBloc>()..add(LoadFocusSessionsEvent())),
+      ],
       child: ValueListenableBuilder<ThemeMode>(
         valueListenable: themeNotifier,
         builder: (_, ThemeMode currentMode, __) {

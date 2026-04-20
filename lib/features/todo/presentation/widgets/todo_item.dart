@@ -21,20 +21,15 @@ class TodoItem extends StatelessWidget {
 
   IconData _getCategoryIcon(String category) {
     switch (category.toLowerCase()) {
-      case 'work':
-        return Icons.work_outline_rounded;
-      case 'personal':
-        return Icons.person_outline_rounded;
-      case 'shopping':
-        return Icons.shopping_bag_outlined;
-      case 'health':
-        return Icons.favorite_border_rounded;
-      case 'education':
-        return Icons.menu_book_rounded;
-      case 'sports':
-        return Icons.sports_basketball_rounded;
-      default:
-        return Icons.category_outlined;
+      case 'work': return Icons.business_center_rounded;
+      case 'personal': return Icons.person_outline_rounded;
+      case 'shopping': return Icons.shopping_bag_outlined;
+      case 'health': return Icons.favorite_border_rounded;
+      case 'education': return Icons.menu_book_rounded;
+      case 'finance': return Icons.account_balance_wallet_rounded;
+      case 'social': return Icons.people_outline_rounded;
+      case 'sports': return Icons.directions_run_rounded;
+      default: return Icons.category_rounded;
     }
   }
 
@@ -51,7 +46,7 @@ class TodoItem extends StatelessWidget {
       case 'education': return const Color(0xFF8B5CF6);
       case 'finance': return const Color(0xFF059669);
       case 'social': return const Color(0xFF3B82F6);
-      case 'sports': return const Color(0xFFF97316); // Vibrant Orange
+      case 'sports': return const Color(0xFFF97316);
       default: return const Color(0xFF64748B);
     }
   }

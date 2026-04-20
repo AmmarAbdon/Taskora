@@ -14,21 +14,29 @@ class TodoLoaded extends TodoState {
   final List<TodoEntity> todos;
   final String filter;
   final String searchQuery;
+  final int focusSessionsToday;
 
-  TodoLoaded({required this.todos, this.filter = 'All', this.searchQuery = ''});
+  TodoLoaded({
+    required this.todos,
+    this.filter = 'All',
+    this.searchQuery = '',
+    this.focusSessionsToday = 0,
+  });
 
   @override
-  List<Object?> get props => [todos, filter, searchQuery];
+  List<Object?> get props => [todos, filter, searchQuery, focusSessionsToday];
 
   TodoLoaded copyWith({
     List<TodoEntity>? todos,
     String? filter,
     String? searchQuery,
+    int? focusSessionsToday,
   }) {
     return TodoLoaded(
       todos: todos ?? this.todos,
       filter: filter ?? this.filter,
       searchQuery: searchQuery ?? this.searchQuery,
+      focusSessionsToday: focusSessionsToday ?? this.focusSessionsToday,
     );
   }
 }

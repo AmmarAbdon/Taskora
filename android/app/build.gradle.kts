@@ -49,6 +49,15 @@ android {
         versionName = flutter.versionName
     }
 
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a", "x86_64")
+            isUniversalApk = false
+        }
+    }
+
     buildTypes {
         getByName("release") {
             if (keystorePropertiesFile.exists()) {
@@ -57,6 +66,7 @@ android {
                 signingConfig = signingConfigs.getByName("debug")
             }
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
