@@ -61,14 +61,13 @@ jobs:
       - name: 🧪 Unit & widget tests
         run: flutter test --coverage
 
-      - name: 📊 Check test coverage (> 40%)
+      - name: 📊 Check test coverage (> 70%)
         run: |
           # Use lcov-summary or a simple grep to check percentage
-          # For simplicity in CI, using a basic grep on the lcov file
           COVERAGE=$(lcov --summary coverage/lcov.info | grep lines | cut -d ' ' -f 4 | cut -d '%' -f 1)
           echo "Current coverage: $COVERAGE%"
-          if [ $(echo "$COVERAGE < 40" | bc -l) -eq 1 ]; then
-            echo "❌ Coverage is below 40%!"
+          if [ $(echo "$COVERAGE < 70" | bc -l) -eq 1 ]; then
+            echo "❌ Coverage is below target threshold (70%)!"
             exit 1
           fi
 
