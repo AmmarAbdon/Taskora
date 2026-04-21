@@ -123,20 +123,26 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   void _onSearchTodos(SearchTodosEvent event, Emitter<TodoState> emit) {
     if (state is TodoLoaded) {
       final currentState = state as TodoLoaded;
-      emit(currentState.copyWith(searchQuery: event.query));
-      _applyFilterAndSearch(emit, currentState.filter, event.query, currentState.focusSessionsToday);
+      final filtered = _getFilteredTodos(event.query, currentState.filter);
+      emit(currentState.copyWith(
+        searchQuery: event.query,
+        todos: filtered,
+      ));
     }
   }
 
   void _onFilterTodos(FilterTodosEvent event, Emitter<TodoState> emit) {
     if (state is TodoLoaded) {
       final currentState = state as TodoLoaded;
-      emit(currentState.copyWith(filter: event.filter));
-      _applyFilterAndSearch(emit, event.filter, currentState.searchQuery, currentState.focusSessionsToday);
+      final filtered = _getFilteredTodos(currentState.searchQuery, event.filter);
+      emit(currentState.copyWith(
+        filter: event.filter,
+        todos: filtered,
+      ));
     }
   }
 
-  void _applyFilterAndSearch(Emitter<TodoState> emit, String filter, String query, int focusSessionsToday) {
+  List<TodoEntity> _getFilteredTodos(String query, String filter) {
     List<TodoEntity> filtered = _allTodos;
     if (filter == 'Completed') {
       filtered = filtered.where((t) => t.isCompleted).toList();
@@ -145,8 +151,10 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     }
     if (query.isNotEmpty) {
       final lowerQuery = query.toLowerCase();
-      filtered = filtered.where((t) => t.title.toLowerCase().contains(lowerQuery) || t.description.toLowerCase().contains(lowerQuery)).toList();
+      filtered = filtered.where((t) =>
+          t.title.toLowerCase().contains(lowerQuery) ||
+          t.description.toLowerCase().contains(lowerQuery)).toList();
     }
-    emit((state as TodoLoaded).copyWith(todos: filtered, focusSessionsToday: focusSessionsToday));
+    return filtered;
   }
 }

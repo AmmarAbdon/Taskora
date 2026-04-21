@@ -13,6 +13,7 @@ import '../widgets/empty_view.dart';
 import 'add_edit_todo_page.dart';
 import '../../domain/entities/todo_entity.dart';
 import '../../../onboarding/presentation/pages/profile_setup_page.dart';
+import '../../../../core/theme/responsive.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -41,6 +42,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final size = MediaQuery.of(context).size;
+    final isSmallHeight = size.height < 700;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -54,27 +57,33 @@ class _HomePageState extends State<HomePage> {
             }
 
             return Padding(
-              padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+              padding: EdgeInsets.fromLTRB(20.w, isSmallHeight ? 12.h : 20.h, 20.w, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _getGreeting(profile),
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.w800,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _getGreeting(profile),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: theme.colorScheme.primary,
+                            fontWeight: FontWeight.w800,
+                            fontSize: isSmallHeight ? 16.sp : 20.sp,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        "Stay productive today!",
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
-                      ),
-                    ],
+                        const SizedBox(height: 4),
+                        Text(
+                          "Stay productive today!",
+                          style: TextStyle(fontSize: 11.sp, color: Colors.grey),
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 12),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -87,8 +96,8 @@ class _HomePageState extends State<HomePage> {
                     child: Hero(
                       tag: 'profile_avatar_home',
                       child: Container(
-                        width: 48,
-                        height: 48,
+                        width: isSmallHeight ? 36.w : 44.w,
+                        height: isSmallHeight ? 36.w : 44.w,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: theme.colorScheme.surfaceContainerHighest,
@@ -104,7 +113,9 @@ class _HomePageState extends State<HomePage> {
                               : null,
                         ),
                         child: profile?.imagePath == null
-                            ? Icon(Icons.person_rounded, color: theme.colorScheme.outline)
+                            ? Icon(Icons.person_rounded, 
+                                  color: theme.colorScheme.outline, 
+                                  size: isSmallHeight ? 18.sp : 22.sp)
                             : null,
                       ),
                     ),
@@ -117,16 +128,17 @@ class _HomePageState extends State<HomePage> {
 
         // --- Search Field ---
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          padding: EdgeInsets.fromLTRB(16.w, isSmallHeight ? 10.h : 14.h, 16.w, 0),
           child: TextField(
             controller: _searchController,
             onChanged: (v) => context.read<TodoBloc>().add(SearchTodosEvent(v)),
+            style: TextStyle(fontSize: isSmallHeight ? 13.sp : 15.sp),
             decoration: InputDecoration(
               hintText: "Find your task...",
-              prefixIcon: const Icon(Icons.search_rounded),
+              prefixIcon: Icon(Icons.search_rounded, size: isSmallHeight ? 18.sp : 22.sp),
               filled: true,
               fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: isSmallHeight ? 10.h : 14.h),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
@@ -169,7 +181,7 @@ class _HomePageState extends State<HomePage> {
                       return const SliverFillRemaining(child: EmptyView());
                     }
                     return SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, isSmallHeight ? 80.h : 100.h),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate((context, index) {
                           final todo = state.todos[index];

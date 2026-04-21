@@ -6,6 +6,7 @@ import '../bloc/focus_bloc/focus_event.dart';
 import '../bloc/focus_bloc/focus_state.dart';
 import '../bloc/todo_bloc.dart';
 import '../bloc/todo_event.dart';
+import '../../../../core/theme/responsive.dart';
 
 class FocusModePage extends StatelessWidget {
   const FocusModePage({super.key});
@@ -106,8 +107,6 @@ class FocusModePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    final isShortScreen = size.height < 700;
 
     return BlocListener<FocusBloc, FocusState>(
       listenWhen: (previous, current) => previous.remainingTime > 0 && current.remainingTime == 0,
@@ -129,126 +128,133 @@ class FocusModePage extends StatelessWidget {
           final progress = totalDuration == 0 ? 0.0 : state.remainingTime / totalDuration;
 
           return Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: [
-                  SizedBox(height: isShortScreen ? 12 : 24),
-                  
-                  // --- Mode Switcher ---
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            body: LayoutBuilder(
+              builder: (context, constraints) {
+                final height = constraints.maxHeight;
+                final isSmall = height < 600;
+                
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: Column(
                     children: [
-                      const SizedBox(width: 48), 
-                      SegmentedButton<bool>(
-                        segments: const [
-                          ButtonSegment(value: true, icon: Icon(Icons.work_rounded, size: 18), label: Text("Work")),
-                          ButtonSegment(value: false, icon: Icon(Icons.coffee_rounded, size: 18), label: Text("Break")),
-                        ],
-                        selected: {state.isWorking},
-                        onSelectionChanged: (Set<bool> newSelection) {
-                          if (state.isWorking != newSelection.first) {
-                            context.read<FocusBloc>().add(ToggleModeEvent());
-                          }
-                        },
-                      ),
-                      IconButton(
-                        onPressed: () => _showSettings(context, state),
-                        icon: const Icon(Icons.settings_suggest_rounded),
-                        color: theme.colorScheme.primary,
-                      ),
-                    ],
-                  ).animate().fadeIn().slideY(begin: -0.2),
-                  
-                  SizedBox(height: isShortScreen ? 16 : 24),
-                  
-                  // --- Label ---
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: (state.isWorking ? const Color(0xFFEF4444) : const Color(0xFF10B981)).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      state.isWorking ? "FOCUS SESSION" : "RELAX TIME",
-                      style: TextStyle(
-                        color: state.isWorking ? const Color(0xFFEF4444) : const Color(0xFF10B981),
-                        fontWeight: FontWeight.w900,
-                        fontSize: 12,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                  ).animate().fadeIn().scale(),
-                  
-                  const Spacer(), // Flexible space
-                  
-                  // --- Main Timer Circle ---
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(
-                        width: isShortScreen ? 200 : 230,
-                        height: isShortScreen ? 200 : 230,
-                        child: CircularProgressIndicator(
-                          value: progress,
-                          strokeWidth: 10,
-                          backgroundColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            state.isWorking ? const Color(0xFFEF4444) : const Color(0xFF10B981),
+                      SizedBox(height: isSmall ? 8.h : 16.h),
+                      
+                      // --- Mode Switcher ---
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(width: 40.w), 
+                          SegmentedButton<bool>(
+                            segments: [
+                              ButtonSegment(value: true, icon: Icon(Icons.work_rounded, size: 16.sp), label: Text("Work", style: TextStyle(fontSize: 11.sp))),
+                              ButtonSegment(value: false, icon: Icon(Icons.coffee_rounded, size: 16.sp), label: Text("Break", style: TextStyle(fontSize: 11.sp))),
+                            ],
+                            selected: {state.isWorking},
+                            onSelectionChanged: (Set<bool> newSelection) {
+                              if (state.isWorking != newSelection.first) {
+                                context.read<FocusBloc>().add(ToggleModeEvent());
+                              }
+                            },
                           ),
-                          strokeCap: StrokeCap.round,
+                          IconButton(
+                            onPressed: () => _showSettings(context, state),
+                            icon: Icon(Icons.settings_suggest_rounded, size: 18.sp),
+                            color: theme.colorScheme.primary,
+                          ),
+                        ],
+                      ).animate().fadeIn().slideY(begin: -0.1),
+                      
+                      SizedBox(height: isSmall ? 8.h : 16.h),
+                      
+                      // --- Label ---
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+                        decoration: BoxDecoration(
+                          color: (state.isWorking ? const Color(0xFFEF4444) : const Color(0xFF10B981)).withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                      ).animate(onPlay: (controller) => controller.repeat())
-                       .shimmer(duration: 3.seconds, color: Colors.white.withValues(alpha: 0.1)),
-                      Text(
-                        _formatTime(state.remainingTime),
-                        style: theme.textTheme.displayMedium?.copyWith(
-                          fontWeight: FontWeight.w900,
-                          fontSize: isShortScreen ? 48 : 64,
-                          letterSpacing: -1,
+                        child: Text(
+                          state.isWorking ? "FOCUS SESSION" : "RELAX TIME",
+                          style: TextStyle(
+                            color: state.isWorking ? const Color(0xFFEF4444) : const Color(0xFF10B981),
+                            fontWeight: FontWeight.w900,
+                            fontSize: 10.sp,
+                            letterSpacing: 1,
+                          ),
                         ),
-                      ).animate().fadeIn().scale(delay: 200.ms),
+                      ).animate().fadeIn().scale(),
+                      
+                      const Spacer(flex: 1), 
+                      
+                      // --- Main Timer Circle ---
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(
+                            width: (height * 0.35).clamp(160.0, 240.0),
+                            height: (height * 0.35).clamp(160.0, 240.0),
+                            child: CircularProgressIndicator(
+                              value: progress,
+                              strokeWidth: (height * 0.012).clamp(8.0, 12.0),
+                              backgroundColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                state.isWorking ? const Color(0xFFEF4444) : const Color(0xFF10B981),
+                              ),
+                              strokeCap: StrokeCap.round,
+                            ),
+                          ).animate(onPlay: (controller) => controller.repeat())
+                           .shimmer(duration: 3.seconds, color: Colors.white.withValues(alpha: 0.1)),
+                          Text(
+                            _formatTime(state.remainingTime),
+                            style: theme.textTheme.displayMedium?.copyWith(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 54.sp,
+                              letterSpacing: -1,
+                            ),
+                          ).animate().fadeIn().scale(delay: 200.ms),
+                        ],
+                      ),
+                      
+                      const Spacer(flex: 1),
+                      
+                      // --- Controls ---
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton.filledTonal(
+                            onPressed: () => context.read<FocusBloc>().add(ResetTimerEvent()),
+                            padding: EdgeInsets.all(isSmall ? 10.w : 14.w),
+                            icon: Icon(Icons.replay_rounded, size: 22.sp),
+                          ),
+                          SizedBox(width: 24.w),
+                          IconButton.filled(
+                            onPressed: () {
+                              if (state.isRunning) {
+                                context.read<FocusBloc>().add(StopTimerEvent());
+                              } else {
+                                context.read<FocusBloc>().add(StartTimerEvent());
+                              }
+                            },
+                            padding: EdgeInsets.all(isSmall ? 14.w : 20.w),
+                            icon: Icon(state.isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded, size: 32.sp),
+                          ),
+                        ],
+                      ).animate().fadeIn().slideY(begin: 0.1),
+                      
+                      const Spacer(flex: 1),
+                      
+                      // --- Progress Card ---
+                      _SessionsInfoCard(
+                        count: state.sessionsToday, 
+                        target: state.sessionsTarget,
+                        isSmall: isSmall,
+                      ).animate(delay: 400.ms).fadeIn().slideY(begin: 0.1),
+                          
+                      SizedBox(height: 110.h), // Bottom bar safe space
                     ],
                   ),
-                  
-                  const Spacer(), // Flexible space
-                  
-                  // --- Controls ---
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton.filledTonal(
-                        onPressed: () => context.read<FocusBloc>().add(ResetTimerEvent()),
-                        padding: const EdgeInsets.all(16),
-                        icon: const Icon(Icons.replay_rounded, size: 24),
-                      ),
-                      const SizedBox(width: 24),
-                      IconButton.filled(
-                        onPressed: () {
-                          if (state.isRunning) {
-                            context.read<FocusBloc>().add(StopTimerEvent());
-                          } else {
-                            context.read<FocusBloc>().add(StartTimerEvent());
-                          }
-                        },
-                        padding: const EdgeInsets.all(24),
-                        icon: Icon(state.isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded, size: 36),
-                      ),
-                    ],
-                  ).animate().fadeIn().slideY(begin: 0.1),
-                  
-                  const Spacer(), // Flexible space
-                  
-                  // --- Progress Card ---
-                  _SessionsInfoCard(
-                    count: state.sessionsToday, 
-                    target: state.sessionsTarget,
-                    isSmall: isShortScreen,
-                  ).animate(delay: 400.ms).fadeIn().slideY(begin: 0.1),
-                      
-                  const SizedBox(height: 110), // Bottom bar safe space
-                ],
-              ),
+                );
+              },
             ),
           );
         },
@@ -267,10 +273,10 @@ class _SessionsInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: EdgeInsets.all(isSmall ? 16 : 20),
+      padding: EdgeInsets.all(isSmall ? 16.w : 20.w),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(28.w),
         border: Border.all(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.3)),
       ),
       child: Column(
@@ -278,29 +284,29 @@ class _SessionsInfoCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(10.w),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.bolt_rounded, color: theme.colorScheme.primary, size: 20),
+                child: Icon(Icons.bolt_rounded, color: theme.colorScheme.primary, size: 18.sp),
               ),
-              const SizedBox(width: 12),
-              const Expanded(
+              SizedBox(width: 12.w),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Daily Progress",
-                      style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
+                      style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14.sp),
                     ),
-                    Text("Daily focus productivity", style: TextStyle(fontSize: 11, color: Colors.grey)),
+                    Text("Daily focus productivity", style: TextStyle(fontSize: 10.sp, color: Colors.grey)),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: isSmall ? 12 : 20),
+          SizedBox(height: isSmall ? 10.h : 18.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -329,11 +335,11 @@ class _StatItem extends StatelessWidget {
       children: [
         Text(
           value,
-          style: TextStyle(fontSize: isSmall ? 18 : 22, fontWeight: FontWeight.w900, color: color),
+          style: TextStyle(fontSize: isSmall ? 16.sp : 20.sp, fontWeight: FontWeight.w900, color: color),
         ),
         Text(
           label.toUpperCase(),
-          style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1),
+          style: TextStyle(fontSize: 8.sp, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1),
         ),
       ],
     );

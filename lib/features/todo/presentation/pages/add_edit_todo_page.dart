@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'dart:math';
 import '../../domain/entities/todo_entity.dart';
 import '../../../../core/services/service_locator.dart';
+import '../../../../core/theme/responsive.dart';
 
 class AddEditTodoPage extends StatefulWidget {
   final TodoEntity? todo;
@@ -109,10 +110,10 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
       child: BlocBuilder<TodoFormBloc, TodoFormState>(
         builder: (context, state) {
           final List<Widget> items = [
-            const SizedBox(height: 60),
+            SizedBox(height: widget.isIntegrated ? 12.h : 24.h),
             TextFormField(
               controller: _titleController,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
               decoration: InputDecoration(
                 hintText: "What needs to be done?",
                 border: InputBorder.none,
@@ -120,19 +121,20 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
               ),
               validator: (v) => v == null || v.isEmpty ? "Title is required" : null,
             ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.1),
-            const SizedBox(height: 12),
+            SizedBox(height: 10.h),
             TextFormField(
               controller: _descriptionController,
               maxLines: null,
+              style: TextStyle(fontSize: 14.sp),
               decoration: InputDecoration(
                 hintText: "Add description...",
-                prefixIcon: const Icon(Icons.notes, size: 20),
+                prefixIcon: Icon(Icons.notes, size: 18.sp),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                 filled: true,
                 fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
               ),
             ).animate(delay: 100.ms).fadeIn(duration: 400.ms).slideX(begin: -0.1),
-            const SizedBox(height: 20),
+            SizedBox(height: 14.h),
             Row(
               children: [
                 Expanded(
@@ -151,7 +153,7 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
                     },
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 14.w),
                 Expanded(
                   child: _PickerTile(
                     label: "Time",
@@ -165,10 +167,10 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
                 ),
               ],
             ).animate(delay: 200.ms).fadeIn(duration: 400.ms).scale(begin: const Offset(0.95, 0.95)),
-            const SizedBox(height: 32),
-            Text("Category", style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold))
+            SizedBox(height: 16.h),
+            Text("Category", style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 16.sp))
                 .animate(delay: 300.ms).fadeIn(),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             SizedBox(
               height: 45,
               child: ListView.separated(
@@ -192,10 +194,10 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
                 },
               ),
             ).animate(delay: 350.ms).fadeIn().slideX(begin: 0.1),
-            const SizedBox(height: 24),
-            Text("Priority", style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold))
+            SizedBox(height: 14.h),
+            Text("Priority", style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 16.sp))
                 .animate(delay: 400.ms).fadeIn(),
-            const SizedBox(height: 12),
+            SizedBox(height: 10.h),
             Row(
               children: TodoPriority.values.map((p) {
                 final isSelected = state.selectedPriority == p;
@@ -207,11 +209,11 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
                 }
                 return Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.w),
                     child: GestureDetector(
                       onTap: () => _formBloc.add(PriorityChangedEvent(p)),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.symmetric(vertical: 10.h),
                         decoration: BoxDecoration(
                           color: isSelected ? pColor : pColor.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
@@ -220,7 +222,7 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
                         child: Center(
                           child: Text(
                             p.name.toUpperCase(),
-                            style: TextStyle(color: isSelected ? Colors.white : pColor, fontWeight: FontWeight.bold, fontSize: 12),
+                            style: TextStyle(color: isSelected ? Colors.white : pColor, fontWeight: FontWeight.bold, fontSize: 10.sp),
                           ),
                         ),
                       ),
@@ -229,7 +231,7 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
                 );
               }).toList(),
             ).animate(delay: 450.ms).fadeIn().slideY(begin: 0.1),
-            const SizedBox(height: 24),
+            SizedBox(height: 14.h),
             _ToggleTile(
               label: "Pin to top",
               hint: "Pin this task to the top of the list",
@@ -237,7 +239,7 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
               onChanged: (v) => _formBloc.add(PinnedChangedEvent(v)),
               icon: Icons.push_pin_outlined,
             ).animate(delay: 500.ms).fadeIn(),
-            const SizedBox(height: 12),
+            SizedBox(height: 10.h),
             _ToggleTile(
               label: "Enable Reminder",
               hint: "Sends a notification at the selected time",
@@ -245,9 +247,9 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
               onChanged: (v) => _formBloc.add(ReminderChangedEvent(v)),
               icon: Icons.notifications_active_outlined,
             ).animate(delay: 550.ms).fadeIn(),
-            const SizedBox(height: 32),
+            SizedBox(height: 20.h),
             SizedBox(
-              height: 60,
+              height: 55.h,
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () => _save(state),
@@ -259,16 +261,16 @@ class _AddEditTodoPageState extends State<AddEditTodoPage> {
                 ),
                 child: Text(
                   widget.todo == null ? "CREATE TASK" : "UPDATE TASK",
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1),
+                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w900, letterSpacing: 1),
                 ),
               ),
             ).animate(delay: 600.ms).fadeIn().slideY(begin: 0.2),
           ];
-
+ 
           final content = Form(
             key: _formKey,
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 100.0),
+              padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 120.h),
               children: items,
             ),
           );
@@ -301,13 +303,13 @@ class _PickerTile extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
+        Text(label, style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold, fontSize: 10.sp)),
+        SizedBox(height: 6.h),
         InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
             decoration: BoxDecoration(
               color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(16),
@@ -315,9 +317,9 @@ class _PickerTile extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(icon, size: 18, color: theme.colorScheme.primary),
-                const SizedBox(width: 12),
-                Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+                Icon(icon, size: 16.sp, color: theme.colorScheme.primary),
+                SizedBox(width: 10.w),
+                Text(value, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12.sp)),
               ],
             ),
           ),
@@ -340,7 +342,7 @@ class _ToggleTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(20),
@@ -348,17 +350,17 @@ class _ToggleTile extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(color: theme.colorScheme.primary.withValues(alpha: 0.1), shape: BoxShape.circle),
-            child: Icon(icon, size: 20, color: theme.colorScheme.primary),
+            child: Icon(icon, size: 18.sp, color: theme.colorScheme.primary),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 14.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text(hint, style: theme.textTheme.bodySmall),
+                Text(label, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.sp)),
+                Text(hint, style: theme.textTheme.bodySmall?.copyWith(fontSize: 10.sp)),
               ],
             ),
           ),

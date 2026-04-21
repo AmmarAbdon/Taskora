@@ -153,5 +153,306 @@ void main() {
         TodoError('An unexpected error occurred while adding the task'),
       ],
     );
+    // --- UpdateTodoEvent ---
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoActionSuccess] and reloads todos when UpdateTodoEvent is successful (no reminder)',
+      build: () {
+        when(() => mockUpdateTodo(any())).thenAnswer((_) async => {});
+        when(() => mockNotificationService.cancelNotification(any())).thenAnswer((_) async => {});
+        when(() => mockGetTodos(any())).thenAnswer((_) async => tTodosList);
+        when(() => mockGetFocusSessionsCount(any())).thenAnswer((_) async => 5);
+        return bloc;
+      },
+      act: (bloc) => bloc.add(UpdateTodoEvent(tTodo)),
+      expect: () => [
+        TodoActionSuccess("Task updated successfully! ✨"),
+        TodoLoading(),
+        TodoLoaded(todos: tTodosList, focusSessionsToday: 5),
+      ],
+      verify: (bloc) {
+        verify(() => mockUpdateTodo(tTodo)).called(1);
+        verify(() => mockNotificationService.cancelNotification(tTodo.notificationId)).called(1);
+      },
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoActionSuccess] and schedules notification when UpdateTodoEvent has reminder enabled',
+      build: () {
+        final futureDate = DateTime.now().add(const Duration(days: 1));
+        final tTodoWithReminder = tTodo.copyWith(
+          enableReminder: true,
+          isCompleted: false,
+          dateTime: futureDate,
+        );
+        when(() => mockUpdateTodo(any())).thenAnswer((_) async => {});
+        when(() => mockNotificationService.cancelNotification(any())).thenAnswer((_) async => {});
+        when(() => mockNotificationService.scheduleNotification(any())).thenAnswer((_) async => {});
+        when(() => mockGetTodos(any())).thenAnswer((_) async => [tTodoWithReminder]);
+        when(() => mockGetFocusSessionsCount(any())).thenAnswer((_) async => 0);
+        return bloc;
+      },
+      act: (bloc) => bloc.add(UpdateTodoEvent(
+        tTodo.copyWith(
+          enableReminder: true,
+          isCompleted: false,
+          dateTime: DateTime.now().add(const Duration(days: 1)),
+        ),
+      )),
+      expect: () => [
+        TodoActionSuccess("Task updated successfully! ✨"),
+        TodoLoading(),
+        isA<TodoLoaded>(),
+      ],
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoError] with CacheException message when UpdateTodoEvent fails with CacheException',
+      build: () {
+        when(() => mockUpdateTodo(any())).thenThrow(CacheException('Update cache failed'));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(UpdateTodoEvent(tTodo)),
+      expect: () => [TodoError('Update cache failed')],
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoError] when UpdateTodoEvent fails with generic exception',
+      build: () {
+        when(() => mockUpdateTodo(any())).thenThrow(Exception('unexpected'));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(UpdateTodoEvent(tTodo)),
+      expect: () => [TodoError('An unexpected error occurred while updating the task')],
+    );
+
+    // --- DeleteTodoEvent ---
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoActionSuccess] and reloads todos when DeleteTodoEvent is successful',
+      build: () {
+        when(() => mockDeleteTodo(any())).thenAnswer((_) async => {});
+        when(() => mockNotificationService.cancelNotification(any())).thenAnswer((_) async => {});
+        when(() => mockGetTodos(any())).thenAnswer((_) async => []);
+        when(() => mockGetFocusSessionsCount(any())).thenAnswer((_) async => 0);
+        return bloc;
+      },
+      act: (bloc) => bloc.add(DeleteTodoEvent(tTodo.id!, tTodo.notificationId)),
+      expect: () => [
+        TodoActionSuccess("Task deleted successfully! 🗑️"),
+        TodoLoading(),
+        TodoLoaded(todos: const [], focusSessionsToday: 0),
+      ],
+      verify: (bloc) {
+        verify(() => mockDeleteTodo(tTodo.id!)).called(1);
+        verify(() => mockNotificationService.cancelNotification(tTodo.notificationId)).called(1);
+      },
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoError] when DeleteTodoEvent fails with CacheException',
+      build: () {
+        when(() => mockDeleteTodo(any())).thenThrow(CacheException('Delete cache failed'));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(DeleteTodoEvent(1, 1)),
+      expect: () => [TodoError('Delete cache failed')],
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoError] when DeleteTodoEvent fails with generic exception',
+      build: () {
+        when(() => mockDeleteTodo(any())).thenThrow(Exception('unexpected'));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(DeleteTodoEvent(1, 1)),
+      expect: () => [TodoError('An unexpected error occurred while deleting the task')],
+    );
+
+    // --- ToggleTodoStatusEvent ---
+    blocTest<TodoBloc, TodoState>(
+      'marks task as completed and cancels notification when ToggleTodoStatusEvent is dispatched on pending task',
+      build: () {
+        when(() => mockUpdateTodo(any())).thenAnswer((_) async => {});
+        when(() => mockNotificationService.cancelNotification(any())).thenAnswer((_) async => {});
+        when(() => mockGetTodos(any())).thenAnswer((_) async => tTodosList);
+        when(() => mockGetFocusSessionsCount(any())).thenAnswer((_) async => 5);
+        return bloc;
+      },
+      act: (bloc) => bloc.add(ToggleTodoStatusEvent(tTodo)), // tTodo.isCompleted == false
+      expect: () => [
+        TodoLoading(),
+        TodoLoaded(todos: tTodosList, focusSessionsToday: 5),
+      ],
+      verify: (bloc) {
+        // Verify updateTodo was called with isCompleted: true
+        final captured = verify(() => mockUpdateTodo(captureAny())).captured;
+        expect((captured.first as TodoEntity).isCompleted, isTrue);
+      },
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'marks task as pending and schedules notification on future date when ToggleTodoStatusEvent is dispatched on completed task',
+      build: () {
+        final completedTodo = tTodo.copyWith(
+          isCompleted: true,
+          dateTime: DateTime.now().add(const Duration(hours: 2)),
+        );
+        when(() => mockUpdateTodo(any())).thenAnswer((_) async => {});
+        when(() => mockNotificationService.scheduleNotification(any())).thenAnswer((_) async => {});
+        when(() => mockGetTodos(any())).thenAnswer((_) async => [completedTodo]);
+        when(() => mockGetFocusSessionsCount(any())).thenAnswer((_) async => 0);
+        return bloc;
+      },
+      act: (bloc) => bloc.add(ToggleTodoStatusEvent(
+        tTodo.copyWith(
+          isCompleted: true,
+          dateTime: DateTime.now().add(const Duration(hours: 2)),
+        ),
+      )),
+      expect: () => [
+        TodoLoading(),
+        isA<TodoLoaded>(),
+      ],
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoError] with CacheException when ToggleTodoStatusEvent fails',
+      build: () {
+        when(() => mockUpdateTodo(any())).thenThrow(CacheException('Toggle cache failed'));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(ToggleTodoStatusEvent(tTodo)),
+      expect: () => [TodoError('Toggle cache failed')],
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoError] when ToggleTodoStatusEvent fails with generic exception',
+      build: () {
+        when(() => mockUpdateTodo(any())).thenThrow(Exception('oops'));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(ToggleTodoStatusEvent(tTodo)),
+      expect: () => [TodoError('An unexpected error occurred while toggling task status')],
+    );
+
+    // --- SearchTodosEvent & FilterTodosEvent ---
+    blocTest<TodoBloc, TodoState>(
+      'filters todos by search query when SearchTodosEvent is dispatched on a loaded state',
+      build: () {
+        when(() => mockGetTodos(any())).thenAnswer((_) async => tTodosList);
+        when(() => mockGetFocusSessionsCount(any())).thenAnswer((_) async => 0);
+        return bloc;
+      },
+      act: (bloc) async {
+        bloc.add(LoadTodosEvent());
+        await Future.delayed(const Duration(milliseconds: 100));
+        bloc.add(SearchTodosEvent('Test'));
+      },
+      skip: 2, // skip Loading + Loaded from initial load
+      expect: () => [
+        isA<TodoLoaded>().having((s) => s.todos, 'todos', [tTodo]),
+      ],
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'returns empty list when search query matches nothing',
+      build: () {
+        when(() => mockGetTodos(any())).thenAnswer((_) async => tTodosList);
+        when(() => mockGetFocusSessionsCount(any())).thenAnswer((_) async => 0);
+        return bloc;
+      },
+      act: (bloc) async {
+        bloc.add(LoadTodosEvent());
+        await Future.delayed(const Duration(milliseconds: 100));
+        bloc.add(SearchTodosEvent('NoMatch_XYZ'));
+      },
+      skip: 2,
+      expect: () => [
+        isA<TodoLoaded>().having((s) => s.todos, 'todos', isEmpty),
+      ],
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'filters by "Completed" when FilterTodosEvent is dispatched on a loaded state',
+      build: () {
+        when(() => mockGetTodos(any())).thenAnswer((_) async => tTodosList);
+        when(() => mockGetFocusSessionsCount(any())).thenAnswer((_) async => 0);
+        return bloc;
+      },
+      act: (bloc) async {
+        bloc.add(LoadTodosEvent());
+        await Future.delayed(const Duration(milliseconds: 100));
+        bloc.add(FilterTodosEvent('Completed'));
+      },
+      skip: 2,
+      expect: () => [
+        isA<TodoLoaded>().having((s) => s.todos, 'todos', isEmpty), // tTodo is not completed
+      ],
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'filters by "Pending" when FilterTodosEvent is dispatched on a loaded state',
+      build: () {
+        when(() => mockGetTodos(any())).thenAnswer((_) async => tTodosList);
+        when(() => mockGetFocusSessionsCount(any())).thenAnswer((_) async => 0);
+        return bloc;
+      },
+      act: (bloc) async {
+        bloc.add(LoadTodosEvent());
+        await Future.delayed(const Duration(milliseconds: 100));
+        bloc.add(FilterTodosEvent('Pending'));
+      },
+      skip: 2,
+      expect: () => [
+        isA<TodoLoaded>().having((s) => s.todos, 'todos', [tTodo]),
+      ],
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'SearchTodosEvent and FilterTodosEvent do nothing when state is not TodoLoaded',
+      build: () => bloc,
+      act: (bloc) async {
+        bloc.add(SearchTodosEvent('something'));
+        bloc.add(FilterTodosEvent('Completed'));
+      },
+      expect: () => [],
+    );
+
+    // --- AddTodoEvent with notification ---
+    blocTest<TodoBloc, TodoState>(
+      'schedules notification when AddTodoEvent has reminder enabled with a future date',
+      build: () {
+        final futureDate = DateTime.now().add(const Duration(days: 1));
+        final tTodoWithReminder = tTodo.copyWith(enableReminder: true, dateTime: futureDate);
+        when(() => mockAddTodo(any())).thenAnswer((_) async => {});
+        when(() => mockNotificationService.scheduleNotification(any())).thenAnswer((_) async => {});
+        when(() => mockGetTodos(any())).thenAnswer((_) async => [tTodoWithReminder]);
+        when(() => mockGetFocusSessionsCount(any())).thenAnswer((_) async => 0);
+        return bloc;
+      },
+      act: (bloc) => bloc.add(AddTodoEvent(
+        tTodo.copyWith(
+          enableReminder: true,
+          dateTime: DateTime.now().add(const Duration(days: 1)),
+        ),
+      )),
+      expect: () => [
+        TodoActionSuccess("Task added successfully! 🎉"),
+        TodoLoading(),
+        isA<TodoLoaded>(),
+      ],
+      verify: (_) {
+        verify(() => mockNotificationService.scheduleNotification(any())).called(1);
+      },
+    );
+
+    blocTest<TodoBloc, TodoState>(
+      'emits [TodoError] with CacheException message when AddTodoEvent fails with CacheException',
+      build: () {
+        when(() => mockAddTodo(any())).thenThrow(CacheException('Add cache failed'));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(AddTodoEvent(tTodo)),
+      expect: () => [TodoError('Add cache failed')],
+    );
   });
 }

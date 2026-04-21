@@ -9,6 +9,7 @@ import '../bloc/calendar_bloc/calendar_event.dart';
 import '../bloc/calendar_bloc/calendar_state.dart';
 import '../../domain/entities/todo_entity.dart';
 import '../widgets/todo_item.dart';
+import '../../../../core/theme/responsive.dart';
 
 class CalendarPage extends StatelessWidget {
   const CalendarPage({super.key});
@@ -36,15 +37,15 @@ class CalendarPage extends StatelessWidget {
                   }
 
                   return Container(
-                    margin: const EdgeInsets.all(16),
+                    margin: EdgeInsets.all(16.w),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(20.w),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
+                          blurRadius: 10.w,
+                          offset: Offset(0, 4.h),
                         ),
                       ],
                     ),
@@ -103,15 +104,17 @@ class CalendarPage extends StatelessWidget {
                             children: [
                               Icon(
                                 Icons.event_busy,
-                                size: 64,
+                                size: 48.sp,
                                 color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
                               ),
-                              const SizedBox(height: 16),
+                              SizedBox(height: 12.h),
                               Text(
                                 "No tasks for this day",
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   color: theme.colorScheme.onSurfaceVariant,
+                                  fontSize: 14.sp,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                             ],
                           ),
@@ -119,6 +122,7 @@ class CalendarPage extends StatelessWidget {
                       }
 
                       return ListView.builder(
+                        padding: EdgeInsets.only(bottom: 80.h),
                         itemCount: dayTodos.length,
                         itemBuilder: (context, index) {
                           final todo = dayTodos[index];
