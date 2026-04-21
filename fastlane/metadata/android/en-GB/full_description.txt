@@ -1,0 +1,10 @@
+Taskora is a premium, beautifully designed productivity companion that helps you organize your life with ease. Built with modern Material 3 aesthetics and a highly intuitive interface, it provides a seamless experience for managing your daily tasks, whether in light or dark mode. 
+
+Key Features:
+• 🚀 Streamlined Task Management: Quickly add, edit, complete, and organize your tasks to stay on top of your day.
+• 🔔 Custom Reminders: Never miss a deadline with reliable, customizable local notifications.
+• 🔍 Advanced Search & Filtering: Instantly find what you need and focus on what matters most.
+• 🎨 Stunning Visuals: Enjoy a modern, responsive layout with full Dark Mode support and a personalized profile dashboard.
+• 🔒 Privacy-First & Offline Ready: Your data is kept completely secure and private on your device. No internet connection required.
+
+Boost your daily productivity and take control of your time with Taskora!
