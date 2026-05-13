@@ -109,18 +109,45 @@ class FocusModePage extends StatelessWidget {
     final theme = Theme.of(context);
 
     return BlocListener<FocusBloc, FocusState>(
-      listenWhen: (previous, current) => previous.remainingTime > 0 && current.remainingTime == 0,
+      listenWhen: (previous, current) {
+        final timerFinished = previous.remainingTime > 0 && current.remainingTime == 0;
+        final targetReached = previous.sessionsToday < current.sessionsTarget && 
+                             current.sessionsToday >= current.sessionsTarget &&
+                             current.sessionsToday > 0;
+        return timerFinished || targetReached;
+      },
       listener: (context, state) {
-        context.read<TodoBloc>().add(LoadTodosEvent());
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(state.isWorking ? "Break session finished!" : "Work session finished!"),
-            backgroundColor: state.isWorking ? const Color(0xFF10B981) : const Color(0xFFEF4444),
-            behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.all(20),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-        );
+        if (state.remainingTime == 0) {
+          context.read<TodoBloc>().add(LoadTodosEvent());
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.isWorking ? "Break session finished!" : "Work session finished!"),
+              backgroundColor: state.isWorking ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(20),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+          );
+        }
+
+        // Congratulatory message when target is reached
+        if (state.sessionsToday >= state.sessionsTarget && state.sessionsToday > 0) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              icon: const Icon(Icons.workspace_premium_rounded, size: 48, color: Color(0xFFF59E0B)),
+              title: const Text("Goal Achieved!"),
+              content: Text("Amazing work! You've completed your daily target of ${state.sessionsTarget} focus sessions. Keep up the momentum!"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Awesome!"),
+                ),
+              ],
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+            ),
+          );
+        }
       },
       child: BlocBuilder<FocusBloc, FocusState>(
         builder: (context, state) {
@@ -272,6 +299,8 @@ class _SessionsInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final percent = target > 0 ? (count / target).clamp(0.0, 1.0) : 0.0;
+    
     return Container(
       padding: EdgeInsets.all(isSmall ? 16.w : 20.w),
       decoration: BoxDecoration(
@@ -304,16 +333,45 @@ class _SessionsInfoCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (count >= target && target > 0)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF59E0B).withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    "GOAL MET!",
+                    style: TextStyle(color: const Color(0xFFF59E0B), fontWeight: FontWeight.bold, fontSize: 8.sp),
+                  ),
+                ),
             ],
           ),
           SizedBox(height: isSmall ? 10.h : 18.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _StatItem(label: "Sessions", value: "$count", color: theme.colorScheme.primary, isSmall: isSmall),
+              _StatItem(label: "Done", value: "$count", color: theme.colorScheme.primary, isSmall: isSmall),
               _StatItem(label: "Target", value: "$target", color: Colors.grey, isSmall: isSmall),
-              _StatItem(label: "Streak", value: "3 Days", color: const Color(0xFFF59E0B), isSmall: isSmall),
+              _StatItem(
+                label: "Progress", 
+                value: "${(percent * 100).toInt()}%", 
+                color: const Color(0xFFF59E0B), 
+                isSmall: isSmall
+              ),
             ],
+          ),
+          SizedBox(height: 16.h),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: LinearProgressIndicator(
+              value: percent,
+              minHeight: 6.h,
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                percent >= 1.0 ? const Color(0xFF10B981) : theme.colorScheme.primary,
+              ),
+            ),
           ),
         ],
       ),
