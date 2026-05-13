@@ -5,6 +5,7 @@ import '../datasources/todo_local_datasource.dart';
 import '../models/todo_model.dart';
 import '../models/focus_session_model.dart';
 
+/// Implementation of [TodoRepository] that bridges the domain layer and the [TodoLocalDataSource].
 class TodoRepositoryImpl implements TodoRepository {
   final TodoLocalDataSource localDataSource;
 

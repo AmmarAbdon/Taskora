@@ -4,6 +4,8 @@ import 'focus_event.dart';
 import 'focus_state.dart';
 import '../../../domain/repositories/todo_repository.dart';
 
+/// Manages the Pomodoro timer logic, including ticker handling, mode toggling (Work/Break),
+/// and persistence of completed sessions.
 class FocusBloc extends Bloc<FocusEvent, FocusState> {
   final TodoRepository repository;
   StreamSubscription<int>? _tickerSubscription;

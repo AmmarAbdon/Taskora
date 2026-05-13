@@ -3,6 +3,7 @@ import '../../../../core/services/profile_service.dart';
 import 'profile_event.dart';
 import 'profile_state.dart';
 
+/// Manages the user's profile state, including loading, updating, and onboarding completion.
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final ProfileService profileService;
 

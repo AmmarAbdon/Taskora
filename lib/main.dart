@@ -14,6 +14,8 @@ import 'features/onboarding/presentation/pages/splash_screen.dart';
 
 late ValueNotifier<ThemeMode> themeNotifier;
 
+/// Entry point of the Taskora application.
+/// Initializes services, preferences, and the theme notifier.
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
@@ -29,6 +31,8 @@ void main() async {
   runApp(const MyApp());
 }
 
+/// Root widget of the application.
+/// Sets up MultiBlocProvider for global state management and configures the app theme.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

@@ -1,7 +1,9 @@
 import 'package:equatable/equatable.dart';
 
+/// Priority levels for tasks.
 enum TodoPriority { low, medium, high }
 
+/// Core domain entity representing a task/todo item.
 class TodoEntity extends Equatable {
   final int? id;
   final String title;

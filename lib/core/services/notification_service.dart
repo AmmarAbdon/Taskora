@@ -11,6 +11,7 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
   // This function is required for handling background notification taps
 }
 
+/// Service responsible for managing local and scheduled notifications.
 class NotificationService {
   final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();

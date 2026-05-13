@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'todo_form_event.dart';
 import 'todo_form_state.dart';
 
+/// Manages the temporary state of the add/edit task form, including input validation and formatting.
 class TodoFormBloc extends Bloc<TodoFormEvent, TodoFormState> {
   TodoFormBloc() : super(TodoFormState.initial()) {
     on<InitializeFormEvent>((event, emit) {

@@ -12,6 +12,8 @@ import '../../domain/entities/todo_entity.dart';
 import '../../../../core/services/service_locator.dart';
 import '../../../../core/theme/responsive.dart';
 
+/// Page for creating a new task or editing an existing one, featuring category selection,
+/// priority levels, and reminder scheduling.
 class AddEditTodoPage extends StatefulWidget {
   final TodoEntity? todo;
   final bool isIntegrated;

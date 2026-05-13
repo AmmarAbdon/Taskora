@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// Centralized class for managing the application's visual theme system.
 class AppTheme {
   static const Color _primaryLight = Color(0xFF4F46E5); // Indigo
   static const Color _primaryDark = Color(0xFF818CF8);
@@ -9,6 +10,7 @@ class AppTheme {
   static const Color _surfaceLight = Colors.white;
   static const Color _surfaceDark = Color(0xFF1E293B); // Slate 800
 
+  /// Returns the configured [ThemeData] for Light Mode.
   static ThemeData get lightTheme {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: _primaryLight,
@@ -49,6 +51,7 @@ class AppTheme {
     );
   }
 
+  /// Returns the configured [ThemeData] for Dark Mode.
   static ThemeData get darkTheme {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: _primaryDark,

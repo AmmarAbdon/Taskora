@@ -1,5 +1,6 @@
 import '../entities/todo_entity.dart';
 
+/// Abstract contract for task and focus session data management.
 abstract class TodoRepository {
   Future<List<TodoEntity>> getTodos();
   Future<void> addTodo(TodoEntity todo);

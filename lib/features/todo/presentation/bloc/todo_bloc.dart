@@ -11,6 +11,8 @@ import 'todo_event.dart';
 import 'todo_state.dart';
 import '../../../../core/error/exceptions.dart';
 
+/// Primary BLoC for managing task-related business logic, including CRUD operations,
+/// searching, filtering, and notification scheduling.
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final GetTodos getTodos;
   final AddTodo addTodo;

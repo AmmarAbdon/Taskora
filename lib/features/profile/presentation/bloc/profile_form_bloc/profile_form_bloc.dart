@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'profile_form_event.dart';
 import 'profile_form_state.dart';
 
+/// Manages the temporary state of the profile setup/edit form (gender and avatar selection).
 class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
   ProfileFormBloc() : super(ProfileFormState.initial()) {
     on<InitializeProfileFormEvent>((event, emit) {

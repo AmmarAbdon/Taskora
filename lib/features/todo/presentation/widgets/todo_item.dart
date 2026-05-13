@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../domain/entities/todo_entity.dart';
 
+/// A visually rich card widget that displays task details, priority, and category,
+/// and provides actions for toggling status and deleting.
 class TodoItem extends StatelessWidget {
   final TodoEntity todo;
   final VoidCallback onToggle;

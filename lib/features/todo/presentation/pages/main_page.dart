@@ -13,6 +13,8 @@ import 'statistics_page.dart';
 import 'focus_mode_page.dart';
 import '../../../../core/theme/responsive.dart';
 
+/// The primary shell of the application, containing the bottom navigation bar and coordinating
+/// the transition between Home, Add Task, Statistics, and Focus Mode pages.
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
 

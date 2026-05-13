@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Model representing the user's profile information.
 class UserProfile {
   final String name;
   final int age;
@@ -29,6 +30,7 @@ class UserProfile {
   );
 }
 
+/// Service responsible for persisting and retrieving user profile data using SharedPreferences.
 class ProfileService {
   final SharedPreferences _prefs;
   static const String _key = 'user_profile';

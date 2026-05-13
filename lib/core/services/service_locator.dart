@@ -20,6 +20,8 @@ import '../../features/profile/presentation/bloc/profile_form_bloc/profile_form_
 
 final sl = GetIt.instance;
 
+/// Initializes the dependency injection container and registers all services,
+/// repositories, and BLoCs.
 Future<void> init() async {
   // External
   final sharedPreferences = await SharedPreferences.getInstance();

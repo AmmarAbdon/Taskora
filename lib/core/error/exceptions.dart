@@ -1,3 +1,4 @@
+/// Exception thrown when a local data storage operation fails.
 class CacheException implements Exception {
   final String message;
 

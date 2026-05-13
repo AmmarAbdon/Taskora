@@ -1,5 +1,6 @@
 import '../../domain/entities/todo_entity.dart';
 
+/// Data model for tasks that extends [TodoEntity] and includes JSON serialization logic for SQLite.
 class TodoModel extends TodoEntity {
   const TodoModel({
     super.id,

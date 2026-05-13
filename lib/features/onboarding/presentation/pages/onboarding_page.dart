@@ -6,6 +6,7 @@ import 'package:taskora/features/profile/presentation/bloc/profile_event.dart';
 import 'package:taskora/features/profile/presentation/bloc/profile_state.dart';
 import 'profile_setup_page.dart';
 
+/// Interactive onboarding screen that introduces the app's features to new users.
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
 
@@ -160,6 +161,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 }
 
+/// Data model for an individual onboarding slide.
 class OnboardingData {
   final String title;
   final String description;

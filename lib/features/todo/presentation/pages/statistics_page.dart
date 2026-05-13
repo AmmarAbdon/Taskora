@@ -10,6 +10,7 @@ import '../bloc/todo_bloc.dart';
 import '../bloc/todo_state.dart';
 import '../../../../core/theme/responsive.dart';
 
+/// Analytics page that visualizes user productivity with radial progress dials and statistics.
 class StatisticsPage extends StatelessWidget {
   const StatisticsPage({super.key});
 

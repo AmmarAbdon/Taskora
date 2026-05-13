@@ -4,6 +4,7 @@ import '../../../../core/error/exceptions.dart';
 import '../models/todo_model.dart';
 import '../models/focus_session_model.dart';
 
+/// Interface for the local data source responsible for persisting tasks and focus sessions.
 abstract class TodoLocalDataSource {
   Future<List<TodoModel>> getTodos();
   Future<void> addTodo(TodoModel todo);
@@ -15,6 +16,7 @@ abstract class TodoLocalDataSource {
   Future<int> getFocusSessionsCountForDay(String date);
 }
 
+/// SQLite implementation of the [TodoLocalDataSource].
 class TodoLocalDataSourceImpl implements TodoLocalDataSource {
   static Database? _database;
 

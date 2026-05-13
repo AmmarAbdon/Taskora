@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../../../core/services/profile_service.dart';
 
+/// Base class for all profile-related states emitted by the [ProfileBloc].
 abstract class ProfileState extends Equatable {
   const ProfileState();
 

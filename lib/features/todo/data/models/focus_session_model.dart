@@ -1,3 +1,4 @@
+/// Data model for a completed focus session, used for tracking productivity history.
 class FocusSessionModel {
   final int? id;
   final String date; // YYYY-MM-DD

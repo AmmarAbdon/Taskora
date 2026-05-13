@@ -12,6 +12,8 @@ import 'package:taskora/features/profile/presentation/bloc/profile_form_bloc/pro
 import 'package:taskora/features/profile/presentation/bloc/profile_form_bloc/profile_form_state.dart';
 import '../../../../core/services/service_locator.dart';
 
+/// Page for the user to set up their profile (name, age, gender, and avatar).
+/// Used during initial onboarding and for editing the profile later.
 class ProfileSetupPage extends StatefulWidget {
   final bool isEditing;
   final String heroTag;

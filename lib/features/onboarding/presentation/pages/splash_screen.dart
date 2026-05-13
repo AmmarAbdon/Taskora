@@ -9,6 +9,8 @@ import 'onboarding_page.dart';
 import 'profile_setup_page.dart';
 import '../../../todo/presentation/pages/main_page.dart';
 
+/// Initial landing screen that handles app initialization and navigation routing.
+/// Determines whether to show onboarding, profile setup, or the main dashboard.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 

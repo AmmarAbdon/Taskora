@@ -8,15 +8,18 @@ import '../bloc/todo_bloc.dart';
 import '../bloc/todo_event.dart';
 import '../../../../core/theme/responsive.dart';
 
+/// Immersive page for the Pomodoro focus timer and daily productivity tracking.
 class FocusModePage extends StatelessWidget {
   const FocusModePage({super.key});
 
+  /// Formats raw seconds into a MM:SS string for display.
   String _formatTime(int remainingTime) {
     int minutes = remainingTime ~/ 60;
     int seconds = remainingTime % 60;
     return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
+  /// Displays a bottom sheet to adjust work/break durations and daily session targets.
   void _showSettings(BuildContext context, FocusState state) {
     final workController = TextEditingController(text: (state.workDuration ~/ 60).toString());
     final breakController = TextEditingController(text: (state.breakDuration ~/ 60).toString());
@@ -290,6 +293,8 @@ class FocusModePage extends StatelessWidget {
   }
 }
 
+/// A card widget that displays daily session progress, including a progress bar
+/// and a celebration badge if the target is met.
 class _SessionsInfoCard extends StatelessWidget {
   final int count;
   final int target;
@@ -379,6 +384,7 @@ class _SessionsInfoCard extends StatelessWidget {
   }
 }
 
+/// Small widget to display an individual statistic (e.g., Done, Target, Progress).
 class _StatItem extends StatelessWidget {
   final String label;
   final String value;

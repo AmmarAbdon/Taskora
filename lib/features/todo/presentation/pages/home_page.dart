@@ -15,6 +15,7 @@ import '../../domain/entities/todo_entity.dart';
 import '../../../onboarding/presentation/pages/profile_setup_page.dart';
 import '../../../../core/theme/responsive.dart';
 
+/// The main dashboard of the application, showing user greeting, search, filters, and task list.
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
